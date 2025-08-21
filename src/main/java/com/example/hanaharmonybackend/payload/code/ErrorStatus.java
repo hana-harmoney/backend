@@ -1,0 +1,27 @@
+package com.example.hanaharmonybackend.payload.code;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@AllArgsConstructor
+public enum ErrorStatus implements BaseStatus {
+    INVALID_INPUT("E001", "Invalid input provided", HttpStatus.BAD_REQUEST),
+    SERVER_ERROR("E002", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNAUTHORIZED("E003", "권한이 없습니다.", HttpStatus.UNAUTHORIZED);
+
+    private final String code;
+    private final String message;
+    private final HttpStatus httpStatus;
+
+    @Override
+    public ReasonDto getReason() {
+        return ReasonDto.builder()
+                .httpStatus(httpStatus)
+                .message(message)
+                .code(code)
+                .build();
+    }
+
+}

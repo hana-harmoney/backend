@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://harmoneydb.czqoy0e2y3u4.ap-northeast-2.rds.amazonaws.com:3306/harmoneydb?serverTimezone=UTC&useSSL=false
+    username: harmoney
+    password: hana9988!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
