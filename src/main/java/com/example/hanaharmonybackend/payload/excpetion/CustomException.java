@@ -14,4 +14,5 @@ public class CustomException extends RuntimeException {
     public ReasonDto getErrorReason() {
         return this.status.getReason();
     }
+
 }

@@ -14,3 +14,38 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+  web:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      allowed-headers: "*"
+      allow-credentials: false
+
+# ⬇️ 이 둘은 spring *바깥* 최상위여야 합니다.
+jwt:
+  secret: "CHANGE-ME-TO-AT-LEAST-32-BYTES-SECRET-KEY"
+  ttlMillis: 3600000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui
+    display-request-duration: true
+    try-it-out-enabled: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
