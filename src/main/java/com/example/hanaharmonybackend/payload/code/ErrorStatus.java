@@ -10,6 +10,7 @@ public enum ErrorStatus implements BaseStatus {
     INVALID_INPUT("E001", "Invalid input provided", HttpStatus.BAD_REQUEST),
     SERVER_ERROR("E002", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHORIZED("E003", "권한이 없습니다.", HttpStatus.UNAUTHORIZED),
+    BAD_CREDENTIALS("40101", "아이디 또는 비밀번호가 올바르지 않습니다.", org.springframework.http.HttpStatus.UNAUTHORIZED),
     DUPLICATE_LOGIN_ID("40901", "이미 사용 중인 아이디입니다.", HttpStatus.CONFLICT),;
 
     private final String code;

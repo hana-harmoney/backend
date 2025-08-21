@@ -28,10 +28,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             try {
+                // refresh 토큰이면 인증 컨텍스트 세팅하지 않고 통과
+                String typ = jwt.parseTokenType(token);
+                if ("refresh".equalsIgnoreCase(typ)) {
+                    chain.doFilter(request, response);
+                    return;
+                }
+
                 Long uid = jwt.parseUserId(token);
                 var auth = new UsernamePasswordAuthenticationToken(uid, null, List.of());
                 SecurityContextHolder.getContext().setAuthentication(auth);
-            } catch (Exception ignored) { /* 유효하지 않으면 익명 처리 */ }
+            } catch (Exception ignored) {/* 유효하지 않으면 익명 처리 */ }
         }
         chain.doFilter(request, response);
     }
