@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createBoard(@RequestBody @Valid BoardCreateRequest request) {
-        User user=SecurityUtil.getCurrentMember();
+        User user = SecurityUtil.getCurrentMember();
         String loginId = user.getLoginId();
 
         BoardResponse response = boardService.createBoard(request, loginId);
@@ -29,7 +31,14 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ApiResponse<BoardResponse> getBoardById(@PathVariable Long boardId) {
-        return ApiResponse.success(boardService.getBoardById(boardId));
+    public ResponseEntity<ApiResponse<?>> getBoardById(@PathVariable Long boardId) {
+        BoardResponse response = boardService.getBoardById(boardId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<?>> getAllBoards() {
+        List<BoardResponse> response = boardService.getAllBoards();
+        return ResponseEntity.ok(ApiResponse.success(java.util.Map.of("boardList", response)));
     }
 }
