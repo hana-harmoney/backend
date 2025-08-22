@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.payload.excpetion;
+package com.example.hanaharmonybackend.payload.exception;
 
 import com.example.hanaharmonybackend.payload.code.BaseStatus;
 import com.example.hanaharmonybackend.payload.code.ReasonDto;
@@ -14,4 +14,5 @@ public class CustomException extends RuntimeException {
     public ReasonDto getErrorReason() {
         return this.status.getReason();
     }
+
 }
