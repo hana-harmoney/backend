@@ -36,6 +36,10 @@ dependencies {
     runtimeOnly  'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly  'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    // S3 세팅
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.4.0")
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
