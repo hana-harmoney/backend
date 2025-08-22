@@ -31,11 +31,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // ✅ 기본 로그인 폼/HTTP Basic 비활성화 (로그인 폼 사라짐)
+                // 기본 로그인 폼/HTTP Basic 비활성화 (로그인 폼 사라짐)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
 
-                // ✅ 공개 경로 허용
+                // 공개 경로 허용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",                         // 루트
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // ✅ 미인증/권한없음 시 JSON으로 응답
+                // 미인증/권한없음 시 JSON으로 응답
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> {
                             res.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -59,7 +59,7 @@ public class SecurityConfig {
                         })
                 );
 
-        // ✅ JWT 필터 삽입
+        // JWT 필터 삽입
         http.addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

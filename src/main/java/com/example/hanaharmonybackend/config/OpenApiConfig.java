@@ -16,7 +16,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().title("Hanaharmony API").version("v1"))
+                .info(new Info().title("Hanaharmoney API").version("v1"))
                 .components(new Components().addSecuritySchemes(SCHEME,
                         new SecurityScheme()
                                 .name(SCHEME)

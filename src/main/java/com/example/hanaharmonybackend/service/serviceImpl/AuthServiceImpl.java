@@ -39,7 +39,23 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public SignupResponse signup(SignupRequest req) {
-        // 네가 이미 구현한 회원가입 로직 사용 (여기선 생략)
-        throw new UnsupportedOperationException("signup is implemented elsewhere");
+        if (userRepository.existsByLoginId(req.loginId())) {
+            throw new CustomException(ErrorStatus.DUPLICATE_LOGIN_ID);
+        }
+
+        User user = User.builder()
+                .loginId(req.loginId())
+                .password(passwordEncoder.encode(req.password()))
+                .name(req.name())
+                .birth(req.birth())
+                .gender(req.gender())
+                .phone(req.phone())
+                .address(req.address())
+                .deleted(false)
+                .build();
+
+        User saved = userRepository.save(user);
+        return new SignupResponse(saved.getId(), saved.getLoginId(), saved.getName());
     }
+
 }
