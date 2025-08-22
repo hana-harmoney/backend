@@ -14,7 +14,7 @@ public interface ProfileService {
             Long currentUserId,
             String nickname,
             String description,
-            List<String> categoryIds,
+            List<Long> categoryIds,
             MultipartFile profileImg,
             List<MultipartFile> descImages
     );

@@ -33,7 +33,7 @@ public class ProfileController {
     public ApiResponse<ProfileResponse> createWithFiles(
             @RequestParam("nickname") @NotBlank String nickname,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "category_ids", required = false) List<String> categoryIds,
+            @RequestParam(value = "category_ids", required = false) List<Long> categoryIds,
             @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
             @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImages
     ) {

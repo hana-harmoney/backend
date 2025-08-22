@@ -5,7 +5,7 @@ import java.util.List;
 public record ProfileResponse(
         String nickname,
         String profile_img,
-        List<String> category_ids,
+        List<Long> category_ids,
         String description,
         List<String> img_url,
         int trust,

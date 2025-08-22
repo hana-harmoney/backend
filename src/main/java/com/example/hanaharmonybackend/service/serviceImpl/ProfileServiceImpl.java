@@ -28,10 +28,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
-    private final FileStorageService fileStorage;         // ⬅️ 주입
+    private final FileStorageService fileStorage;   // S3 업로드/삭제
     private final ObjectMapper om = new ObjectMapper();
 
-    // (기존) JSON 방식
+    /**
+     * 프로필 등록 (JSON 방식)
+     * - category_ids: List<Long> (숫자 배열) → JSON으로 저장
+     * - img_url: String URL 리스트 (DescImage로 저장)
+     */
     @Override
     public ProfileResponse create(Long currentUserId, ProfileCreateRequest req) {
         if (profileRepository.existsByUser_Id(currentUserId)) {
@@ -45,7 +49,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .nickname(req.nickname())
                 .description(req.description())
                 .profileImg(req.profile_img())
-                .categoryIdsJson(writeJson(req.category_ids()))
+                .categoryIds(writeJsonLong(req.category_ids())) // 🔹 숫자 배열로 저장
                 .build();
 
         if (req.img_url() != null) {
@@ -57,12 +61,17 @@ public class ProfileServiceImpl implements ProfileService {
         return toResponse(profileRepository.save(p));
     }
 
-    // 멀티파트 파일 업로드 연동
+    /**
+     * 프로필 등록 (파일 업로드 방식)
+     * - categoryIds: List<Long> (숫자 배열) → JSON으로 저장
+     * - profile_img: MultipartFile (선택)
+     * - desc_images: List<MultipartFile> (선택)
+     */
     @Override
     public ProfileResponse createWithFiles(Long currentUserId,
                                            String nickname,
                                            String description,
-                                           List<String> categoryIds,
+                                           List<Long> categoryIds,                 // 🔹 Long으로 변경
                                            MultipartFile profileImg,
                                            List<MultipartFile> descImages) {
         if (profileRepository.existsByUser_Id(currentUserId)) {
@@ -88,7 +97,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .nickname(nickname)
                 .description(description)
                 .profileImg(profileImgUrl)
-                .categoryIdsJson(writeJson(categoryIds))
+                .categoryIds(writeJsonLong(categoryIds)) // 🔹 숫자 배열로 저장
                 .build();
 
         for (String url : descImageUrls) {
@@ -107,22 +116,25 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     // ===== helpers =====
-    private String writeJson(List<String> list){
+    private String writeJsonLong(List<Long> list){
         if (list == null) return null;
         try { return om.writeValueAsString(list); }
         catch (Exception e){ return null; }
     }
-    private List<String> readJson(String json){
+
+    private List<Long> readJsonLong(String json){
         if (json == null) return List.of();
-        try { return om.readValue(json, new TypeReference<List<String>>(){}); }
+        try { return om.readValue(json, new TypeReference<List<Long>>(){}); }
         catch (Exception e){ return List.of(); }
     }
+
+
     private ProfileResponse toResponse(Profile p){
         var imgs = p.getImages().stream().map(DescImage::getImgUrl).toList();
         return new ProfileResponse(
                 p.getNickname(),
                 p.getProfileImg(),
-                readJson(p.getCategoryIdsJson()),
+                readJsonLong(p.getCategoryIds()), // 🔹 숫자 배열로 응답
                 p.getDescription(),
                 imgs,
                 p.getTrust().intValue(),
