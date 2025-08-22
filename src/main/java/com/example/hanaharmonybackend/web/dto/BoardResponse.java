@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class BoardResponse {
     private Long boardId;
     private String nickname;
-    private int trust;
+    private Double trust;
     private String title;
     private String content;
     private Long wage;

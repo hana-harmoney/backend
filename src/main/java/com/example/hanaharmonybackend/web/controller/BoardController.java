@@ -3,7 +3,7 @@ package com.example.hanaharmonybackend.web.controller;
 
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.ApiResponse;
-import com.example.hanaharmonybackend.service.serviceImpl.BoardService;
+import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import jakarta.validation.Valid;

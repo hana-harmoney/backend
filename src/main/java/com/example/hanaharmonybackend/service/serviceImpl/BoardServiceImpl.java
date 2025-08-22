@@ -1,12 +1,14 @@
-package com.example.hanaharmonybackend.service;
+package com.example.hanaharmonybackend.service.serviceImpl;
 
 import com.example.hanaharmonybackend.domain.Board;
 import com.example.hanaharmonybackend.domain.Category;
+import com.example.hanaharmonybackend.domain.Profile;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.repository.BoardRepository;
 import com.example.hanaharmonybackend.repository.CategoryRepository;
+import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
-import com.example.hanaharmonybackend.service.serviceImpl.BoardService;
+import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
     @Override
     public BoardResponse createBoard(BoardCreateRequest request, String userEmail) {
@@ -26,8 +29,8 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
-
-        Profile profile=user.getProfile();
+        Profile profile = profileRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
 
         Board board = Board.builder()
                 .title(request.getTitle())
@@ -37,6 +40,7 @@ public class BoardServiceImpl implements BoardService {
                 .imageUrl(request.getImageUrl())
                 .user(user)
                 .category(category)
+                .status(false)
                 .build();
 
         Board saved = boardRepository.save(board);
@@ -44,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
         return BoardResponse.builder()
                 .boardId(saved.getBoardId())
                 .nickname(profile.getNickname())
-                .trust((int) profile.getTrust())
+                .trust(profile.getTrust())
                 .title(saved.getTitle())
                 .content(saved.getContent())
                 .wage(saved.getWage())

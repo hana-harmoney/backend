@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.service.serviceImpl;
+package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.domain.Board;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
