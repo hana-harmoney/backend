@@ -1,5 +1,8 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
+
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.hanaharmonybackend.domain.Board;
 import com.example.hanaharmonybackend.domain.Category;
 import com.example.hanaharmonybackend.domain.Profile;
@@ -58,6 +61,32 @@ public class BoardServiceImpl implements BoardService {
                 .status(saved.getStatus())
                 .createdAt(saved.getCreatedAt())
                 .updatedAt(saved.getUpdatedAt())
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BoardResponse getBoardById(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        return toResponse(board);
+    }
+
+    private BoardResponse toResponse(Board board) {
+        return BoardResponse.builder()
+                .boardId(board.getBoardId())
+                .nickname(board.getUser().getProfile().getNickname())
+                .profileUrl(board.getUser().getProfile().getProfileImg())
+                .trust(board.getUser().getProfile().getTrust())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .wage(board.getWage())
+                .address(board.getAddress())
+                .imageUrl(board.getImageUrl())
+                .category(board.getCategory().getName())
+                .status(board.getStatus())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
                 .build();
     }
 }

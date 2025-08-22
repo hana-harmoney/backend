@@ -27,4 +27,9 @@ public class BoardController {
         BoardResponse response = boardService.createBoard(request, loginId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @GetMapping("/{boardId}")
+    public ApiResponse<BoardResponse> getBoardById(@PathVariable Long boardId) {
+        return ApiResponse.success(boardService.getBoardById(boardId));
+    }
 }

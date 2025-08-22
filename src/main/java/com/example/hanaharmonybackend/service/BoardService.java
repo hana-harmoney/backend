@@ -7,4 +7,5 @@ import com.example.hanaharmonybackend.web.dto.BoardResponse;
 
 public interface BoardService {
     BoardResponse createBoard(BoardCreateRequest request, String userEmail);
+    BoardResponse getBoardById(Long boardId);;
 }

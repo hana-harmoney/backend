@@ -18,6 +18,7 @@ public class BoardResponse {
     private String imageUrl;
     private String category;
     private boolean status;
+    private String profileUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
