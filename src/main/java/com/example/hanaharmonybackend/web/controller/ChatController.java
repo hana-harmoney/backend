@@ -2,6 +2,7 @@ package com.example.hanaharmonybackend.web.controller;
 
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.web.dto.ChatRoomDetailResponse;
 import com.example.hanaharmonybackend.web.dto.ChatRoomListResponse;
 import com.example.hanaharmonybackend.web.dto.ChatRoomRequest;
 import com.example.hanaharmonybackend.web.dto.ChatRoomCreateResponse;
@@ -27,5 +28,11 @@ public class ChatController {
     @GetMapping("")
     public ApiResponse<ChatRoomListResponse> getChatRoomList() {
         return ApiResponse.success(chatRoomService.getChatRoomList());
+    }
+
+    @Operation(summary = "채팅방 단건 조회", description = "채팅방을 단건 조회합니다.")
+    @GetMapping("/{roomId}")
+    public ApiResponse<ChatRoomDetailResponse> getChatRoomDetail(@RequestParam Long roomId) {
+        return ApiResponse.success(chatRoomService.getChatRoomDetail(roomId));
     }
 }

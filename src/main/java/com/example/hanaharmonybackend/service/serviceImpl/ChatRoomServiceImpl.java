@@ -1,9 +1,6 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
-import com.example.hanaharmonybackend.domain.Board;
-import com.example.hanaharmonybackend.domain.ChatMessage;
-import com.example.hanaharmonybackend.domain.ChatRoom;
-import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.domain.*;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.BoardRepository;
@@ -11,10 +8,7 @@ import com.example.hanaharmonybackend.repository.ChatMessageRepository;
 import com.example.hanaharmonybackend.repository.ChatRoomRepository;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.ChatRoomInfoDto;
-import com.example.hanaharmonybackend.web.dto.ChatRoomListResponse;
-import com.example.hanaharmonybackend.web.dto.ChatRoomRequest;
-import com.example.hanaharmonybackend.web.dto.ChatRoomCreateResponse;
+import com.example.hanaharmonybackend.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +22,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
     private final BoardRepository boardRepository;
 
+    // 채팅방 생성
     public ChatRoomCreateResponse createChatRoom(ChatRoomRequest request) {
         Board board = boardRepository.findById(request.getBoardId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
@@ -38,6 +33,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return ChatRoomCreateResponse.fromEntity(chatRoomRepository.save(chatRoom));
     }
 
+    // 채팅방 목록 조회
     @Override
     public ChatRoomListResponse getChatRoomList() {
         User loginUser = SecurityUtil.getCurrentMember();
@@ -65,6 +61,33 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         return ChatRoomListResponse.builder()
                 .chatRoomList(chatRoomList)
+                .build();
+    }
+
+    // 채팅방 단건 조회
+    @Override
+    public ChatRoomDetailResponse getChatRoomDetail(Long roomId) {
+        User loginUser = SecurityUtil.getCurrentMember();
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+
+        if (!room.getUser1().getId().equals(loginUser.getId()) &&
+                !room.getUser2().getId().equals(loginUser.getId())) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
+
+        Board board = room.getBoard();
+        User writer = board.getUser();
+        Profile writerProfile = writer.getProfile();
+
+        return ChatRoomDetailResponse.builder()
+                .boardId(board.getBoardId())
+                .writerId(writer.getId())
+                .nickname(writerProfile.getNickname())
+                .profileUrl(writerProfile.getProfileImg())
+                .title(board.getTitle())
+                .wage(board.getWage())
+                .address(board.getAddress())
                 .build();
     }
 }
