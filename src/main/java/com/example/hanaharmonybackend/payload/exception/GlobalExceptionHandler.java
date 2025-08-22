@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.payload.excpetion;
+package com.example.hanaharmonybackend.payload.exception;
 
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;

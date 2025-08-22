@@ -2,7 +2,7 @@ package com.example.hanaharmonybackend.service.serviceImpl;
 
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
-import com.example.hanaharmonybackend.payload.excpetion.CustomException; // 오탈자 패키지 그대로
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;

@@ -1,4 +1,3 @@
-// src/main/java/com/example/hanaharmonybackend/util/JwtTokenProvider.java
 package com.example.hanaharmonybackend.util;
 
 import io.jsonwebtoken.Claims;
@@ -47,9 +46,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // === ⬇️ 여기부터 추가 메서드들 ===
-
-    // JwtAuthFilter가 호출하는 메서드 (필수)
+    // JwtAuthFilter가 호출하는 메서드
     public Long parseUserId(String token) {
         Number n = parseClaims(token).get("uid", Number.class);
         return n == null ? null : n.longValue();

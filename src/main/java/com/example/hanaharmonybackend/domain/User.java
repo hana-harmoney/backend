@@ -22,7 +22,6 @@ public class User extends BaseEntity {
     @Column(name = "login_id", nullable = false, length = 20, unique = true)
     private String loginId;
 
-    // DB 스키마 컬럼명이 password 이므로 그대로 매핑
     @Column(name = "password", nullable = false, length = 255)
     private String password; // 해시 보관
 
@@ -30,7 +29,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(name = "birth", nullable = false, length = 10)
-    private String birth; // yyyy-MM-dd 등 문자열 저장 스키마에 맞춤
+    private String birth;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false, length = 10)

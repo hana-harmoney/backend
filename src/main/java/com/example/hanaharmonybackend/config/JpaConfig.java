@@ -1,4 +1,3 @@
-// src/main/java/com/example/hanaharmonybackend/config/JpaConfig.java
 package com.example.hanaharmonybackend.config;
 
 import org.springframework.context.annotation.Configuration;
