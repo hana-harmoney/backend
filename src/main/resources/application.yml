@@ -24,6 +24,9 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
 
   web:
     cors:
@@ -31,6 +34,14 @@ spring:
       allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
       allowed-headers: "*"
       allow-credentials: false
+
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID:}
+        secret-key: ${AWS_SECRET_ACCESS_KEY:}
 
 jwt:
   secret: ${JWT_SECRET}
@@ -47,4 +58,10 @@ springdoc:
 logging:
   level:
     org.hibernate.SQL: debug
-    org.hibernate.orm.jdbc.bind: trace
+    org.springframework : INFO
+    org.springframework.web : DEBUG
+
+aws:
+  s3:
+    bucket: ${AWS_BUCKET}
+    region: ap-northeast-2
