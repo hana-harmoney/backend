@@ -24,10 +24,10 @@ public class Board {
 
     private Long wage;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String address;
 
-    @Column(length = 100)
+    @Column(length = 300)
     private String imageUrl;
 
     @Column(nullable = false)

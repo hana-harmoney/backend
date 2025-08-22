@@ -1,6 +1,8 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
 
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hanaharmonybackend.domain.Board;
@@ -68,7 +70,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional(readOnly = true)
     public BoardResponse getBoardById(Long boardId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
         return toResponse(board);
     }
 
