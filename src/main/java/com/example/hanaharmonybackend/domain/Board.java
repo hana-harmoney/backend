@@ -27,6 +27,12 @@ public class Board {
     @Column(length = 100)
     private String address;
 
+    @Column(nullable = false)
+    private Double latitude;
+
+    @Column(nullable = false)
+    private Double longitude;
+
     @Column(length = 300)
     private String imageUrl;
 
