@@ -12,4 +12,5 @@ public interface BoardService {
     BoardResponse getBoardById(Long boardId);
     List<BoardResponse> getAllBoards();
     void deleteBoard(Long boardId, Long userId);
+    List<BoardResponse> getBoardsByUserId(Long userId);
 }

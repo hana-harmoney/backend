@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/board")
@@ -51,5 +52,17 @@ public class BoardController {
         User user=SecurityUtil.getCurrentMember();
         boardService.deleteBoard(boardId, user.getId());
         return ApiResponse.success("게시글 삭제가 완료되었습니다.");
+    }
+
+    //내 글조회
+    @GetMapping("/my")
+    public ResponseEntity<Map<String, Object>> getMyBoards() {
+        User user = SecurityUtil.getCurrentMember();
+        List<BoardResponse> boards = boardService.getBoardsByUserId(user.getId());
+        Map<String, Object> result = Map.of(
+            "message", "내가 작성한 게시글 목록을 성공적으로 불러왔습니다.",
+            "boardList", boards
+        );
+        return ResponseEntity.ok(result);
     }
 }

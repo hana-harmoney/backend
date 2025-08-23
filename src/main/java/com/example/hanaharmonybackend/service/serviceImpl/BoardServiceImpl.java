@@ -35,11 +35,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponse createBoard(BoardCreateRequest request, String userEmail) {
         User user = userRepository.findByLoginId(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorStatus.USER_NOT_FOUND));
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorStatus.CATEGORY_NOT_FOUND));
         Profile profile = profileRepository.findByUser_Id(user.getId())
-                .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorStatus.PROFILE_NOT_FOUND));
 
         Board board = Board.builder()
                 .title(request.getTitle())
@@ -120,6 +120,15 @@ public class BoardServiceImpl implements BoardService {
     @Transactional(readOnly = true)
     public List<BoardResponse> getAllBoards() {
         List<Board> boards = boardRepository.findAll();
+        return boards.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BoardResponse> getBoardsByUserId(Long userId) {
+        List<Board> boards = boardRepository.findByUser_Id(userId);
         return boards.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());

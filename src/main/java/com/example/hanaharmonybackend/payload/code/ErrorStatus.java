@@ -17,7 +17,11 @@ public enum ErrorStatus implements BaseStatus {
     USER_NOT_FOUND("E006", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     //Board 관련 error
-    BOARD_NOT_FOUND("E002", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND);
+    BOARD_NOT_FOUND("B001", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
+    CATEGORY_NOT_FOUND("C001", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    PROFILE_NOT_FOUND("U002", "프로필이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+
+
     private final String code;
     private final String message;
     private final HttpStatus httpStatus;
