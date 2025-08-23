@@ -11,4 +11,5 @@ public interface BoardService {
     BoardResponse createBoard(BoardCreateRequest request, String userEmail);
     BoardResponse getBoardById(Long boardId);
     List<BoardResponse> getAllBoards();
+    void deleteBoard(Long boardId, Long userId);
 }

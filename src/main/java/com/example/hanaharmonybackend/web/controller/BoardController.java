@@ -21,6 +21,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    //일자리 등록
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createBoard(@RequestBody @Valid BoardCreateRequest request) {
         User user = SecurityUtil.getCurrentMember();
@@ -30,15 +31,25 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    //단건조회
     @GetMapping("/{boardId}")
     public ResponseEntity<ApiResponse<?>> getBoardById(@PathVariable Long boardId) {
         BoardResponse response = boardService.getBoardById(boardId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    //전체 조회
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllBoards() {
         List<BoardResponse> response = boardService.getAllBoards();
         return ResponseEntity.ok(ApiResponse.success(java.util.Map.of("boardList", response)));
+    }
+
+    //일자리 삭제
+    @DeleteMapping("/{boardId}")
+    public ApiResponse<?> deleteBoard(@PathVariable Long boardId){
+        User user=SecurityUtil.getCurrentMember();
+        boardService.deleteBoard(boardId, user.getId());
+        return ApiResponse.success("게시글 삭제가 완료되었습니다.");
     }
 }

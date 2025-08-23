@@ -18,8 +18,6 @@ public enum ErrorStatus implements BaseStatus {
 
     //Board 관련 error
     BOARD_NOT_FOUND("E002", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND);
-
-
     private final String code;
     private final String message;
     private final HttpStatus httpStatus;
