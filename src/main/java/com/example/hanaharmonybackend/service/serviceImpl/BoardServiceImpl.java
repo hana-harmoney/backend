@@ -1,14 +1,12 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
 
-import com.example.hanaharmonybackend.payload.code.ErrorStatus;
-import com.example.hanaharmonybackend.payload.exception.CustomException;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.example.hanaharmonybackend.domain.Board;
 import com.example.hanaharmonybackend.domain.Category;
 import com.example.hanaharmonybackend.domain.Profile;
 import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.BoardRepository;
 import com.example.hanaharmonybackend.repository.CategoryRepository;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
@@ -18,6 +16,7 @@ import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
