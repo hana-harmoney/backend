@@ -12,10 +12,9 @@ public class AccountResponse {
   private final String account;
   private final List<PocketDto> pocketLists;
 
-  @Getter
+  @Getter @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  @Builder
   public static class PocketDto {
 	private String name;
 	private Long amount;
