@@ -11,6 +11,9 @@ public enum ErrorStatus implements BaseStatus {
     SERVER_ERROR("E002", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHORIZED("E003", "권한이 없습니다.", HttpStatus.UNAUTHORIZED),
 
+    // Account 관련 error
+    ACCOUNT_NOT_FOUND("E007", "사용자의 계좌를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // User 관련 error
     BAD_CREDENTIALS("E004", "아이디 또는 비밀번호가 올바르지 않습니다.", org.springframework.http.HttpStatus.UNAUTHORIZED),
     DUPLICATE_LOGIN_ID("E005", "이미 사용 중인 아이디입니다.", HttpStatus.CONFLICT),

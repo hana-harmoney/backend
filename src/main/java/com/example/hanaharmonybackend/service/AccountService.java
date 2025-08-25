@@ -1,6 +1,8 @@
 package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.domain.Account;
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.AccountRepository;
 import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ public class AccountService {
   @Transactional(readOnly = true)
   public AccountResponse getMyAccount(Long userId) {
     Account account = accountRepository.findByUser_Id(userId)
-        .orElseThrow(() -> new IllegalArgumentException("해당 사용자 계좌가 없습니다. userId=" + userId));
+        .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
 
     long pocketsSum = account.getPockets().stream()
         .mapToLong(p -> p.getCurrentAmount() == null ? 0L : p.getCurrentAmount())
