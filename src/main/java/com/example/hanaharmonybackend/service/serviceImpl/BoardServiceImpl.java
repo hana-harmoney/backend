@@ -43,7 +43,6 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new CustomException(ErrorStatus.PROFILE_NOT_FOUND));
 
         String imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
-        System.out.println("Uploaded image URL: " + imageUrl);
 
         Board board = Board.builder()
                 .title(request.getTitle())
