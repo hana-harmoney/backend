@@ -3,12 +3,14 @@ package com.example.hanaharmonybackend.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "account")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,7 +21,7 @@ public class Account {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long accountId;
 
-  @Column(name = "account_num", nullable = false, length = 255)
+  @Column(name = "account_num", nullable = false, unique = true, length = 255)
   private String accountNum;
 
   @Column(name = "account_balance", nullable = false)
