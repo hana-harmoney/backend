@@ -52,6 +52,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .orElse(null);
 
                     return ChatRoomInfoResponse.builder()
+                            .roomId(chatRoom.getId())
                             .nickname(otherUser.getProfile().getNickname())
                             .profileImageUrl(otherUser.getProfile().getProfileImg())
                             .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
