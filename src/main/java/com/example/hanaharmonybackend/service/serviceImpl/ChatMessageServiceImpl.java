@@ -24,9 +24,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     @Transactional
-    public ChatMessageResponse saveMessage(ChatMessageRequest request) {
-//        User sender = SecurityUtil.getCurrentMember();
-        User sender = userRepository.findById(6L) // 테스트용 사용자
+    public ChatMessageResponse saveMessage(ChatMessageRequest request, String loginId) {
+        User sender = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.USER_NOT_FOUND));
 
         ChatRoom room = chatRoomRepository.findById(request.getRoomId())
@@ -45,7 +44,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         );
 
         ChatMessage saved = chatMessageRepository.save(chatMessage);
-
         return ChatMessageResponse.from(saved);
     }
 }

@@ -16,6 +16,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Tag(name = "Chat", description = "채팅 API")
 @RestController
 @RequestMapping("/chat")
@@ -43,10 +45,11 @@ public class ChatController {
         return ApiResponse.success(chatRoomService.getChatRoomDetail(roomId));
     }
 
-    @Operation(summary = "메세지 전송", description = "채팅방에 메세지를 전송합니다.")
+    @Operation(summary = "채팅 메세지 전송", description = "채팅 메세지를 전송합니다.")
     @MessageMapping("/chat/message")
-    public void sendMessage(ChatMessageRequest request) {
-        ChatMessageResponse saved = chatMessageService.saveMessage(request);
+    public void sendMessage(ChatMessageRequest request, Principal principal) {
+        String loginId = principal.getName();
+        ChatMessageResponse saved = chatMessageService.saveMessage(request, loginId);
 
         messagingTemplate.convertAndSend(
                 "/sub/chat/room/" + request.getRoomId(),
