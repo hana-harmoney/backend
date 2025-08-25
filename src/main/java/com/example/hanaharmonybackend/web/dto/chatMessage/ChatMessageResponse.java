@@ -15,7 +15,7 @@ public class ChatMessageResponse {
     private Long receiverId;
     private String message;
     private Long amount;
-    private LocalDateTime createdAt;
+    private LocalDateTime regdate;
 
     public static ChatMessageResponse from(ChatMessage chatMessage) {
         return ChatMessageResponse.builder()
@@ -25,7 +25,7 @@ public class ChatMessageResponse {
                 .receiverId(chatMessage.getReceiver().getId())
                 .message(chatMessage.getMessage())
                 .amount(chatMessage.getAmount())
-                .createdAt(chatMessage.getCreatedAt())
+                .regdate(chatMessage.getCreatedAt())
                 .build();
     }
 }

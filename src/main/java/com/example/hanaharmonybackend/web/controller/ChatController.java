@@ -3,6 +3,7 @@ package com.example.hanaharmonybackend.web.controller;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageListResponse;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageRequest;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomDetailResponse;
@@ -43,6 +44,12 @@ public class ChatController {
     @GetMapping("/{roomId}")
     public ApiResponse<ChatRoomDetailResponse> getChatRoomDetail(@PathVariable Long roomId) {
         return ApiResponse.success(chatRoomService.getChatRoomDetail(roomId));
+    }
+
+    @Operation(summary = "채팅방 메시지 리스트 조회", description = "채팅방의 모든 메시지를 조회합니다.")
+    @GetMapping("/{roomId}/message")
+    public ApiResponse<ChatMessageListResponse> getMessages(@PathVariable Long roomId) {
+        return ApiResponse.success(chatMessageService.getMessagesByRoomId(roomId));
     }
 
     @Operation(summary = "채팅 메세지 전송", description = "채팅 메세지를 전송합니다.")

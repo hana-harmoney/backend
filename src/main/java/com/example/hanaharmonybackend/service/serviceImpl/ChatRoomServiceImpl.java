@@ -8,7 +8,6 @@ import com.example.hanaharmonybackend.repository.ChatMessageRepository;
 import com.example.hanaharmonybackend.repository.ChatRoomRepository;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -72,11 +71,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         User loginUser = SecurityUtil.getCurrentMember();
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-
-        if (!room.getUser1().getId().equals(loginUser.getId()) &&
-                !room.getUser2().getId().equals(loginUser.getId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
+        isMember(roomId, loginUser.getLoginId());
 
         Board board = room.getBoard();
         User writer = board.getUser();
@@ -93,41 +88,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .build();
     }
 
-    @Override
-    public List<ChatRoomInfoResponse> getChatRoomsForUser(Long userId) {
-        return chatRoomRepository.findByUserId(userId)
-                .stream()
-                .map(chatRoom -> {
-                    User otherUser = chatRoom.getUser1().getId().equals(userId)
-                            ? chatRoom.getUser2()
-                            : chatRoom.getUser1();
-
-                    // 마지막 메시지 조회
-                    var lastMessageOpt = chatMessageRepository.findTopByRoomOrderByCreatedAtDesc(chatRoom);
-
-                    String lastMessage = lastMessageOpt.map(m -> m.getMessage()).orElse("메세지가 없습니다.");
-                    var lastMessageTime = lastMessageOpt.map(m -> m.getCreatedAt()).orElse(null);
-
-                    return new ChatRoomInfoResponse(
-                            chatRoom.getId(),
-                            otherUser.getProfile().getNickname(),
-                            otherUser.getProfile().getProfileImg(),
-                            lastMessageTime,
-                            lastMessage
-                    );
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ChatMessageResponse> getMessagesForRoom(Long roomId) {
-        var room = chatRoomRepository.findById(roomId)
+    public boolean isMember(Long roomId, String loginId) {
+        ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
 
-        List<ChatMessage> messages = chatMessageRepository.findByRoomOrderByCreatedAtAsc(room);
-
-        return messages.stream()
-                .map(ChatMessageResponse::from)
-                .collect(Collectors.toList());
+        return room.getUser1().getLoginId().equals(loginId) ||
+                room.getUser2().getLoginId().equals(loginId);
     }
 }
