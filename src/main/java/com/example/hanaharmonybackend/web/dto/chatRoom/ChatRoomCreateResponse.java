@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.chatRoom;
 
 import com.example.hanaharmonybackend.domain.ChatRoom;
 import lombok.Builder;

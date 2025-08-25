@@ -32,4 +32,12 @@ public class ChatMessage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
+
+    public ChatMessage(String message, Long amount, ChatRoom room, User sender, User receiver) {
+        this.message = message;
+        this.amount = amount;
+        this.room = room;
+        this.sender = sender;
+        this.receiver = receiver;
+    }
 }
