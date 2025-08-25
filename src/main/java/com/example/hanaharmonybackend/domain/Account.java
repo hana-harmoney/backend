@@ -33,4 +33,16 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    // === 비즈니스 메서드 ===
+    public void withdraw(Long amount) {
+        if (this.accountBalance < amount) {
+            throw new IllegalStateException("잔액 부족");
+        }
+        this.accountBalance -= amount;
+    }
+
+    public void deposit(Long amount) {
+        this.accountBalance += amount;
+    }
 }

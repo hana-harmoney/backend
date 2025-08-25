@@ -11,7 +11,13 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
+    // 계좌 번호 입력시, 예금주 확인 가능
     @Query("SELECT a.user.name FROM Account a " +
             "WHERE a.accountNum = :accountNum AND a.isDeleted = false")
     Optional<String> findOwnerNameByAccountNum(@Param("accountNum") String accountNum);
+
+    // 계좌가 존재하는지 확인하기 위한 계좌 조회
+    Optional<Account> findByAccountNum(String accountNum);
+
+    Optional<Account> findByUser_Id(Long userId);
 }
