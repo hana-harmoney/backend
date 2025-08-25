@@ -47,12 +47,12 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Account account;
+
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Profile profile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts = new ArrayList<>();
 }

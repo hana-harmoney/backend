@@ -1,9 +1,11 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
+import com.example.hanaharmonybackend.domain.Account;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.UserRepository;
+import com.example.hanaharmonybackend.service.AccountCommandService;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
 import com.example.hanaharmonybackend.web.dto.*;
@@ -19,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AccountCommandService accountCommandService;
 
     @Override
     @Transactional(readOnly = true)
@@ -55,7 +58,11 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         User saved = userRepository.save(user);
+
+        // 2) 계좌 생성
+        Account account = accountCommandService.createFor(user);
+        user.setAccount(account);
+
         return new SignupResponse(saved.getId(), saved.getLoginId(), saved.getName());
     }
-
 }

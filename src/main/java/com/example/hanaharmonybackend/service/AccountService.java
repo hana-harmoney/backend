@@ -1,8 +1,9 @@
 package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.web.dto.AccountNameResponse;
+import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 
 public interface AccountService {
-    AccountNameResponse getAccountOwnerName(String accountNum);
+  AccountResponse getMyAccount(Long userId);
+  AccountNameResponse getAccountOwnerName(String accountNum);
 }
-
