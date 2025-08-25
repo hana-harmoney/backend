@@ -40,4 +40,13 @@ public class PocketController {
 
 	return ApiResponse.success(pocket);
   }
+
+  @Operation(summary = "포켓 삭제")
+  @DeleteMapping("/{pocketId}")
+  public ApiResponse<String> delete(@PathVariable Long pocketId){
+	Long userId = SecurityUtil.getCurrentMember().getId();
+	pocketCommandService.delete(pocketId, userId);
+
+	return ApiResponse.success("주머니를 삭제했습니다.");
+  }
 }
