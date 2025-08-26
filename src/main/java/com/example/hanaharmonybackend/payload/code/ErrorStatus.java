@@ -26,7 +26,8 @@ public enum ErrorStatus implements BaseStatus {
 
     //Pocket error
     POCKET_NOT_FOUND("P001", "주머니가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
-    ACCOUNT_ACCESS_DENIED("P002", "계좌 소유자가 아닙니다.",HttpStatus.UNAUTHORIZED);
+    ACCOUNT_ACCESS_DENIED("P002", "계좌 소유자가 아닙니다.",HttpStatus.UNAUTHORIZED),
+    POCKET_ACCESS_DENIED("P003","주머니 소유자가 아닙니다.", HttpStatus.UNAUTHORIZED),
 
     //Chat 관련 error
     CHATROOM_NOT_FOUND("C001", "존재하지 않는 채팅방입니다.", HttpStatus.NOT_FOUND),
