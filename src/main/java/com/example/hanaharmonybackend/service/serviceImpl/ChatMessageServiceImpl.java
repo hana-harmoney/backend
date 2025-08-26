@@ -57,7 +57,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public ChatMessageListResponse getMessagesByRoomId(Long roomId) {
         User loginUser = SecurityUtil.getCurrentMember();
-        chatRoomService.isMember(roomId, loginUser.getLoginId());
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+        if (!chatRoomService.isMember(roomId, loginUser.getLoginId())) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
 
         List<ChatMessage> messages = chatMessageRepository.findAllByRoomIdOrderByCreatedAtAsc(roomId);
 
