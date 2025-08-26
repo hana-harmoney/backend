@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Pocket", description = "포켓 생성/삭제 API")
+@Tag(name = "Pocket", description = "주머니 생성/조회/삭제 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/home/pocket")
