@@ -55,4 +55,8 @@ public class Profile {
         if (matchCount == null) matchCount = 0;
         if (reportCount == null) reportCount = 0;
     }
+
+    public void increaseReportCount() {
+        this.reportCount = this.reportCount + 1;
+    }
 }

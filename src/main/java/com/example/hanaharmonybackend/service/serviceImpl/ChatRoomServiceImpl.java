@@ -6,6 +6,7 @@ import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.BoardRepository;
 import com.example.hanaharmonybackend.repository.ChatMessageRepository;
 import com.example.hanaharmonybackend.repository.ChatRoomRepository;
+import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
@@ -21,6 +22,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final BoardRepository boardRepository;
+    private final ProfileRepository profileRepository;
 
     // 채팅방 생성
     public ChatRoomCreateResponse createChatRoom(ChatRoomRequest request) {
@@ -85,6 +87,30 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .title(board.getTitle())
                 .wage(board.getWage())
                 .address(board.getAddress())
+                .build();
+    }
+
+    // 채팅 상대 신고
+    @Override
+    public ChatRoomReportResponse reportChatRoom(Long roomId) {
+        User loginUser = SecurityUtil.getCurrentMember();
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+        if (!isMember(roomId, loginUser.getLoginId())) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
+
+        User reportedUser = room.getUser1().getId().equals(loginUser.getId())
+                ? room.getUser2()
+                : room.getUser1();
+
+        Profile reportedProfile = reportedUser.getProfile();
+        reportedProfile.increaseReportCount();
+        profileRepository.save(reportedProfile);
+
+        return ChatRoomReportResponse.builder()
+                .reportedUserId(reportedUser.getId())
+                .reportCount(reportedProfile.getReportCount())
                 .build();
     }
 

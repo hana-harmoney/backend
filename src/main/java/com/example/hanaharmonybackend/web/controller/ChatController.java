@@ -6,10 +6,7 @@ import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageListResponse;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageRequest;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
-import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomDetailResponse;
-import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
-import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomRequest;
-import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomCreateResponse;
+import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +47,12 @@ public class ChatController {
     @GetMapping("/{roomId}/message")
     public ApiResponse<ChatMessageListResponse> getMessages(@PathVariable Long roomId) {
         return ApiResponse.success(chatMessageService.getMessagesByRoomId(roomId));
+    }
+
+    @Operation(summary = "채팅 상대 신고", description = "채팅방의 상대를 신고합니다.")
+    @PatchMapping("/{roomId}/report")
+    public ApiResponse<ChatRoomReportResponse> report(@PathVariable Long roomId) {
+        return ApiResponse.success(chatRoomService.reportChatRoom(roomId));
     }
 
     @Operation(summary = "채팅 메세지 전송", description = "채팅 메세지를 전송합니다.")
