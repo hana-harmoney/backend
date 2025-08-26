@@ -6,9 +6,11 @@ import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.AccountRepository;
 import com.example.hanaharmonybackend.service.PocketCommandService;
+import com.example.hanaharmonybackend.service.PocketQueryService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketCreateRequest;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketCreateResponse;
+import com.example.hanaharmonybackend.web.dto.pocket.PocketDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/home/pocket")
 public class PocketController {
 
+  private final PocketQueryService pocketQueryService;
   private final PocketCommandService pocketCommandService;
   private final AccountRepository accountRepository;
 
-  @Operation(summary = "포켓 생성", description = "로그인 사용자의 계좌에 새 포켓을 생성합니다.")
+  @Operation(summary = "주머니 생성")
   @PostMapping
   public ApiResponse<PocketCreateResponse> create(
 	  @Valid @RequestBody PocketCreateRequest req
@@ -41,12 +44,21 @@ public class PocketController {
 	return ApiResponse.success(pocket);
   }
 
-  @Operation(summary = "포켓 삭제")
+  @Operation(summary = "주머니 삭제")
   @DeleteMapping("/{pocketId}")
   public ApiResponse<String> delete(@PathVariable Long pocketId){
 	Long userId = SecurityUtil.getCurrentMember().getId();
 	pocketCommandService.delete(pocketId, userId);
 
 	return ApiResponse.success("주머니를 삭제했습니다.");
+  }
+
+  @Operation(summary = "주머니 거래내역 조회")
+  @GetMapping("/{pocketId}")
+  public ApiResponse<PocketDetailResponse> detail(@PathVariable Long pocketId){
+	Long userId = SecurityUtil.getCurrentMember().getId();
+	PocketDetailResponse res = pocketQueryService.getDetail(pocketId, userId);
+
+	return ApiResponse.success(res);
   }
 }
