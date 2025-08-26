@@ -51,7 +51,6 @@ public class TransactionHistory extends BaseEntity {
   @Column(name = "amount", nullable = false)
   private Long amount;
 
-  /* 편의 메서드 (선택) */
   public boolean isAccountToAccount() { return fromAccount != null && toAccount != null; }
   public boolean isPocketToPocket()   { return fromPocket  != null && toPocket  != null; }
   public boolean isAccountToPocket()  { return fromAccount != null && toPocket  != null; }
