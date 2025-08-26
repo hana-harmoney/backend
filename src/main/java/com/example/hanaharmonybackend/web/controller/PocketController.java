@@ -34,7 +34,7 @@ public class PocketController {
   ){
 	Long userId = SecurityUtil.getCurrentMember().getId();
 
-	Account account = accountRepository.findByUser_Id(userId)
+	Account account = accountRepository.findByUser_IdAndDeletedFalse(userId)
 		.orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
 
 	Long accountId = account.getAccountId();
