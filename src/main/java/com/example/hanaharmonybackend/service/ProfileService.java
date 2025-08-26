@@ -1,6 +1,7 @@
 package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.web.dto.ProfileCreateRequest;
+import com.example.hanaharmonybackend.web.dto.ProfilePatchRequest;
 import com.example.hanaharmonybackend.web.dto.ProfileResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,6 @@ public interface ProfileService {
             MultipartFile profileImg,
             List<MultipartFile> descImages
     );
-
+    ProfileResponse patch(Long userId, ProfilePatchRequest req);
     ProfileResponse getMyProfile(Long currentUserId);
 }
