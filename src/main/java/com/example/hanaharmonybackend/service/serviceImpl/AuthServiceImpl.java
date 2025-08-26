@@ -4,6 +4,7 @@ import com.example.hanaharmonybackend.domain.Account;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
+import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.AccountCommandService;
 import com.example.hanaharmonybackend.service.AuthService;
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AccountCommandService accountCommandService;
+    private final ProfileRepository profileRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -40,7 +42,9 @@ public class AuthServiceImpl implements AuthService {
         String access  = jwtTokenProvider.createAccessToken(user.getId(), user.getLoginId());
         String refresh = jwtTokenProvider.createRefreshToken(user.getId(), user.getLoginId());
 
-        return new LoginResponse(access, refresh, user.getId(), user.getName());
+        boolean hasProfile = profileRepository.existsByUser_Id(user.getId()); //
+
+        return new LoginResponse(access, refresh, user.getId(), user.getName(), hasProfile);
     }
 
     @Override

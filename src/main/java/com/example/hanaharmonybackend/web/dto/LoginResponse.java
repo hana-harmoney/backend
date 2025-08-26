@@ -6,5 +6,6 @@ public record LoginResponse(
         String accessToken,
         String refreshToken,
         @JsonProperty("user_id") Long userId,
-        String name
+        String name,
+        Boolean profile_registered
 ) {}
