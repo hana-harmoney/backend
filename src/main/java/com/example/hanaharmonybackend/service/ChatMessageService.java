@@ -6,5 +6,6 @@ import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
 
 public interface ChatMessageService {
     ChatMessageResponse saveMessage(ChatMessageRequest request, String loginId);
+
     ChatMessageListResponse getMessagesByRoomId(Long roomId);
 }

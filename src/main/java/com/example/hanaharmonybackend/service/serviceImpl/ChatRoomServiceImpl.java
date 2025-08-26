@@ -73,7 +73,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         User loginUser = SecurityUtil.getCurrentMember();
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-        isMember(roomId, loginUser.getLoginId());
+        if (!isMember(roomId, loginUser.getLoginId())) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
 
         Board board = room.getBoard();
         User writer = board.getUser();
