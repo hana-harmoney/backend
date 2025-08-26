@@ -8,4 +8,5 @@ import com.example.hanaharmonybackend.web.dto.SignupResponse;
 public interface AuthService {
     SignupResponse signup(SignupRequest req);
     LoginResponse login(LoginRequest req);
+    void withdraw(Long userId, String reason);
 }

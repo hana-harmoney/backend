@@ -29,7 +29,7 @@ public class Profile {
     private String profileImg;
 
     @Column(name = "category_ids", columnDefinition = "json")
-    private String categoryIdsJson;
+    private String categoryIds;
 
     @Column(name = "trust", nullable = false) @ColumnDefault("5")
     private Double trust;
