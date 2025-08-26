@@ -146,15 +146,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private ProfileResponse toResponse(Profile p){
-        var urls = p.getImages().stream()
-                .map(DescImage::getImgUrl)
-                .toList();
-
         var details = p.getImages().stream()
                 .map(di -> new ProfileResponse.ImageItem(di.getId(), di.getImgUrl()))
                 .toList();
 
         return new ProfileResponse(
+                p.getUser().getId(),
                 p.getNickname(),
                 p.getProfileImg(),
                 readJsonLong(p.getCategoryIds()),
