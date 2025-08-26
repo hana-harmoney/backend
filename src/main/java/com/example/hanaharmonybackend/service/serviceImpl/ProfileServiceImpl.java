@@ -152,9 +152,9 @@ public class ProfileServiceImpl implements ProfileService {
 
         return new ProfileResponse(
                 p.getUser().getId(),
+                p.getUser().getAddress(),
                 p.getNickname(),
                 p.getProfileImg(),
-                p.getUser().getAddress(),
                 readJsonLong(p.getCategoryIds()),
                 p.getDescription(),
                 details,       //(id+url)
