@@ -4,6 +4,7 @@ import java.util.List;
 
 public record ProfileResponse(
         Long user_id,
+        String user_address,
         String nickname,
         String profile_img,
         List<Long> category_ids,
