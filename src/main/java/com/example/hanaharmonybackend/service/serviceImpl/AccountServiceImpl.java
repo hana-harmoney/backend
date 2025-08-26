@@ -27,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountResponse getMyAccount(Long userId) {
-    Account account = accountRepository.findByUser_Id(userId)
+    Account account = accountRepository.findByUser_IdAndDeletedFalse(userId)
         .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
 
     long pocketsSum = account.getPockets().stream()
@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountDetailResponse getDetail(Long requesterId, Long accountId) {
-    Account account = accountRepository.findById(accountId)
+    Account account = accountRepository.findByUser_IdAndDeletedFalse(accountId)
         .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
 
     if (!account.getUser().getId().equals(requesterId)) {

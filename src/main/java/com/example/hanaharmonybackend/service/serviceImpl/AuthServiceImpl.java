@@ -4,6 +4,7 @@ import com.example.hanaharmonybackend.domain.Account;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
+import com.example.hanaharmonybackend.repository.AccountRepository;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.AccountCommandService;
@@ -27,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AccountCommandService accountCommandService;
+    private final AccountRepository accountRepository;
     private final ProfileRepository profileRepository;
 
     @Override
@@ -64,6 +66,8 @@ public class AuthServiceImpl implements AuthService {
         user.setIsDeleted(true);    // 우리가 추가한 세터
         userRepository.save(user);  // 명시 저장(안전)
         userRepository.flush();     // 즉시 반영(선택)
+
+        accountRepository.softDeleteByUserId(userId);
 
         // 현재 세션/컨텍스트에 캐시된 이전 사용자 객체 제거
         SecurityContextHolder.clearContext();
