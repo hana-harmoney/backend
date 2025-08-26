@@ -55,6 +55,12 @@ public class ChatController {
         return ApiResponse.success(chatRoomService.reportChatRoom(roomId));
     }
 
+    @Operation(summary = "채팅 상대 거래 후기", description = "채팅방의 상대에 대한 거래 후기를 남깁니다.")
+    @PatchMapping("/{roomId}/review")
+    public ApiResponse<ChatRoomReviewResponse> review(@PathVariable Long roomId, @RequestBody ChatRoomReviewRequest reviewRequest) {
+        return ApiResponse.success(chatRoomService.reviewChatRoom(roomId, reviewRequest));
+    }
+
     @Operation(summary = "채팅 메세지 전송", description = "채팅 메세지를 전송합니다.")
     @MessageMapping("/chat/message")
     public void sendMessage(ChatMessageRequest request, Principal principal) {

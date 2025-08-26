@@ -114,6 +114,36 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .build();
     }
 
+    // 채팅 거래 후기
+    @Override
+    public ChatRoomReviewResponse reviewChatRoom(Long roomId, ChatRoomReviewRequest request) {
+        User loginUser = SecurityUtil.getCurrentMember();
+        ChatRoom room = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+        if (!isMember(roomId, loginUser.getLoginId())) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
+
+        Double score = request.getScore();
+        if (score == null || !(score == -0.5 || score == 0.5 || score == 1.0)) {
+            throw new CustomException(ErrorStatus.INVALID_REVIEW_SCORE);
+        }
+
+        User reviewedUser = room.getUser1().getId().equals(loginUser.getId())
+                ? room.getUser2()
+                : room.getUser1();
+
+        Profile reviewedProfile = reviewedUser.getProfile();
+        reviewedProfile.updateTrust(request.getScore());
+        profileRepository.save(reviewedProfile);
+
+        return ChatRoomReviewResponse.builder()
+                .reviewedUserId(reviewedUser.getId())
+                .score(request.getScore())
+                .trust(reviewedProfile.getTrust())
+                .build();
+    }
+
     public boolean isMember(Long roomId, String loginId) {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));

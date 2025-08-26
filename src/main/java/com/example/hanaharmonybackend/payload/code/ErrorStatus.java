@@ -26,7 +26,8 @@ public enum ErrorStatus implements BaseStatus {
 
     //Chat 관련 error
     CHATROOM_NOT_FOUND("C001", "존재하지 않는 채팅방입니다.", HttpStatus.NOT_FOUND),
-    CHATROOM_ACCESS_DENIED("C002", "채팅방에 접근 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    CHATROOM_ACCESS_DENIED("C002", "채팅방에 접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    INVALID_REVIEW_SCORE("C003", "유효하지 않은 리뷰 점수입니다. 허용값: -0.5, 0.5, 1.0", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

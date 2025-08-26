@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ChatRoomReportResponse {
-    Long reportedUserId;
-    Integer reportCount;
+public class ChatRoomReviewResponse {
+    Long reviewedUserId;
+    Double score;
+    Double trust;
 }

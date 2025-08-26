@@ -12,4 +12,6 @@ public interface ChatRoomService {
     boolean isMember(Long roomId, String loginId);
 
     ChatRoomReportResponse reportChatRoom(Long roomId);
+
+    ChatRoomReviewResponse reviewChatRoom(Long roomId, ChatRoomReviewRequest reviewRequest);
 }
