@@ -13,13 +13,12 @@ public record ProfilePatchRequest(
         String rawPassword,
         MultipartFile profileImg,
         List<MultipartFile> descImagesAdd,
-        List<Long> descImagesDeleteIds,
-        String descImagesReorder         // "15,9,27"
+        List<Long> descImagesDeleteIds
 ) {
     public static ProfilePatchRequest of(
             String nickname, String description, List<Long> categoryIds, String rawPassword,
             MultipartFile profileImg, List<MultipartFile> descImagesAdd,
-            List<Long> descImagesDeleteIds, String descImagesReorder
+            List<Long> descImagesDeleteIds
     ) {
         return ProfilePatchRequest.builder()
                 .nickname(nickname)
@@ -29,7 +28,6 @@ public record ProfilePatchRequest(
                 .profileImg(profileImg)
                 .descImagesAdd(descImagesAdd)
                 .descImagesDeleteIds(descImagesDeleteIds)
-                .descImagesReorder(descImagesReorder)
                 .build();
     }
 }

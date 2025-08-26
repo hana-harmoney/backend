@@ -61,13 +61,12 @@ public class ProfileController {
             @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
             // 소개 사진 조작
             @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImagesAdd,
-            @RequestParam(value = "desc_images_delete_ids", required = false) List<Long> descImagesDeleteIds,
-            @RequestParam(value = "desc_images_reorder", required = false) String descImagesReorder // "15,9,27"
+            @RequestParam(value = "desc_images_delete_ids", required = false) List<Long> descImagesDeleteIds
     ) {
         User me = SecurityUtil.getCurrentMember();
         var req = ProfilePatchRequest.of(
                 nickname, description, categoryIds, password,
-                profileImg, descImagesAdd, descImagesDeleteIds, descImagesReorder
+                profileImg, descImagesAdd, descImagesDeleteIds
         );
         return ApiResponse.success(profileService.patch(me.getId(), req));
     }

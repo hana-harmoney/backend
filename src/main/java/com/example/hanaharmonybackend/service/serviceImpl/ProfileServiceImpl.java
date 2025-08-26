@@ -21,12 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashMap;
-import java.util.Arrays;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 import static com.example.hanaharmonybackend.payload.code.ErrorStatus.USER_NOT_FOUND;
 
@@ -189,17 +187,30 @@ public class ProfileServiceImpl implements ProfileService {
             safeDelete(oldUrl);
         }
 
-        // 5) 소개 이미지 삭제 (DB 삭제 후 S3 즉시 삭제)
+        // 5) 소개 이미지 삭제 (컬렉션에서 제거 → orphanRemoval 로 DB 삭제, 이후 S3 삭제)
         if (req.descImagesDeleteIds() != null && !req.descImagesDeleteIds().isEmpty()) {
-            var toDelete = descImageRepository.findAllById(req.descImagesDeleteIds());
-            for (DescImage di : toDelete) {
-                if (!Objects.equals(di.getProfile().getId(), p.getId())) {
-                    throw new IllegalArgumentException("본인 이미지가 아닙니다: " + di.getId());
-                }
-                descImageRepository.delete(di);       // DB 먼저
-                safeDelete(di.getImgUrl());           // S3 즉시 삭제
+            // 요청 id 집합
+            var requestIds = new java.util.HashSet<>(req.descImagesDeleteIds());
+
+            // 내 프로필의 이미지 중 삭제 대상만 추출
+            var removeList = p.getImages().stream()
+                    .filter(di -> requestIds.contains(di.getId()))
+                    .toList();
+
+            // 소유권/존재 검증 (요청 id와 실제 삭제 목록 수가 다르면 오류)
+            if (removeList.size() != requestIds.size()) {
+                throw new IllegalArgumentException("존재하지 않거나 내 이미지가 아닌 id가 포함되어 있습니다.");
+            }
+
+            // 1) 컬렉션에서 제거 → orphanRemoval=true 로 DB에서도 삭제됨
+            p.getImages().removeAll(removeList);
+
+            // 2) S3 즉시 삭제
+            for (DescImage di : removeList) {
+                safeDelete(di.getImgUrl());
             }
         }
+
 
         // 6) 소개 이미지 추가 (append)
         if (req.descImagesAdd() != null && !req.descImagesAdd().isEmpty()) {
@@ -209,29 +220,6 @@ public class ProfileServiceImpl implements ProfileService {
                     .forEach(url -> p.getImages().add(DescImage.builder().profile(p).imgUrl(url).build()));
         }
 
-        // 7) 소개 이미지 순서 재정렬 (DescImage에 sortOrder 있을 때만)
-        if (StringUtils.hasText(req.descImagesReorder())) {
-            List<Long> orderedIds = Arrays.stream(req.descImagesReorder().split(","))
-                    .map(String::trim).filter(s -> !s.isEmpty()).map(Long::valueOf).toList();
-
-            // 현재 p.getImages()는 영속 컬렉션
-            Map<Long, DescImage> map = p.getImages().stream()
-                    .collect(Collectors.toMap(DescImage::getId, it -> it, (a, b)->a, LinkedHashMap::new));
-
-            int idx = 0;
-            for (Long id : orderedIds) {
-                DescImage di = map.get(id);
-                if (di != null) {
-                    try {
-                        // 엔티티에 setSortOrder(Integer) 있으면 반영
-                        var m = di.getClass().getMethod("setSortOrder", Integer.class);
-                        m.invoke(di, idx++);
-                    } catch (Exception ignore) {
-                        // sortOrder 필드가 없으면 무시
-                    }
-                }
-            }
-        }
 
         // flush는 트랜잭션 종료 시점
         return toResponse(p);
