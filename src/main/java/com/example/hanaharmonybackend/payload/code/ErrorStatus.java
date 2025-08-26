@@ -22,8 +22,11 @@ public enum ErrorStatus implements BaseStatus {
     //Board 관련 error
     BOARD_NOT_FOUND("B001", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND("C001", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    PROFILE_NOT_FOUND("U002", "프로필이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
+    PROFILE_NOT_FOUND("U002", "프로필이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
 
+    //Chat 관련 error
+    CHATROOM_NOT_FOUND("C001", "존재하지 않는 채팅방입니다.", HttpStatus.NOT_FOUND),
+    CHATROOM_ACCESS_DENIED("C002", "채팅방에 접근 권한이 없습니다.", HttpStatus.FORBIDDEN);
 
     private final String code;
     private final String message;
