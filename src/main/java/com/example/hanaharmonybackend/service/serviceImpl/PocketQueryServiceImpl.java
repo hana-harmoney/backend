@@ -7,6 +7,7 @@ import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.PocketRepository;
 import com.example.hanaharmonybackend.repository.TransactionHistoryRepository;
 import com.example.hanaharmonybackend.service.PocketQueryService;
+import com.example.hanaharmonybackend.web.dto.TransactionType;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketDetailResponse;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketTxDto;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +37,10 @@ public class PocketQueryServiceImpl implements PocketQueryService {
 		txRepository.findByPocketId(pocketId);
 
 	List<PocketTxDto> transactions = rows.stream().map(tx -> {
-	  PocketTxDto.Direction dir =
+	  TransactionType dir =
 		  (tx.getFromPocket() != null && pocketId.equals(tx.getFromPocket().getPocketId()))
-			  ? PocketTxDto.Direction.OUT
-			  : PocketTxDto.Direction.IN;
+			  ? TransactionType.OUT
+			  : TransactionType.IN;
 
 	  String fromName =
 		  tx.getFromPocket()  != null ? tx.getFromPocket().getPocketName()
