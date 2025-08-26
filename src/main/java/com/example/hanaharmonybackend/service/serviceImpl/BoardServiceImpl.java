@@ -12,6 +12,7 @@ import com.example.hanaharmonybackend.repository.CategoryRepository;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.BoardService;
+import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class BoardServiceImpl implements BoardService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     public BoardResponse createBoard(BoardCreateRequest request, String userEmail) {
@@ -40,6 +42,8 @@ public class BoardServiceImpl implements BoardService {
         Profile profile = profileRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.PROFILE_NOT_FOUND));
 
+        String imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+
         Board board = Board.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -47,7 +51,7 @@ public class BoardServiceImpl implements BoardService {
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .address(request.getAddress())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(imageUrl)
                 .user(user)
                 .category(category)
                 .status(false)

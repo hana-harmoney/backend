@@ -55,4 +55,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
+
+    public boolean getIsDeleted() {
+        return this.deleted;
+    }
+
+    public void setIsDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

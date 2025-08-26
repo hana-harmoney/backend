@@ -8,6 +8,6 @@ public record ProfileCreateRequest(
         @NotBlank @Size(max = 50) String nickname,
         @Size(max = 3000) String description,
         String profile_img,
-        List<String> category_ids,
+        List<Long> category_ids,
         List<String> img_url
 ) {}
