@@ -1,16 +1,23 @@
 package com.example.hanaharmonybackend.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.repository.UserRepository;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.secret:change-me-32bytes-minimum-secret-key!}")
@@ -22,8 +29,11 @@ public class JwtTokenProvider {
     @Value("${jwt.refreshTtlMillis:1209600000}") // 14일
     private long refreshTtlMillis;
 
-    private SecretKey key() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createAccessToken(Long userId, String loginId) {
@@ -42,7 +52,7 @@ public class JwtTokenProvider {
                 .claim("typ", type)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + ttl))
-                .signWith(key())
+                .signWith(key)
                 .compact();
     }
 
@@ -63,9 +73,25 @@ public class JwtTokenProvider {
 
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key())
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.warn("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.warn("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.warn("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.warn("JWT claims string is empty.", e);
+        }
+        return false;
     }
 }
