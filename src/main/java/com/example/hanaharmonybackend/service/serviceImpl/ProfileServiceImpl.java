@@ -154,6 +154,7 @@ public class ProfileServiceImpl implements ProfileService {
                 p.getUser().getId(),
                 p.getNickname(),
                 p.getProfileImg(),
+                p.getUser().getAddress(),
                 readJsonLong(p.getCategoryIds()),
                 p.getDescription(),
                 details,       //(id+url)
