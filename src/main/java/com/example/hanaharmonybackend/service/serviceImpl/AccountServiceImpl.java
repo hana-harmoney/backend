@@ -61,36 +61,54 @@ public class AccountServiceImpl implements AccountService {
     List<TransactionHistory> rows = txRepository.findAccountHistory(accountId);
 
     List<AccountTxDto> history = rows.stream().map(tx -> {
+
+      // 내 계좌번호 기준으로 입/출금 판정
       final String myAccountNum = account.getAccountNum();
+      final String fromAccNum = tx.getFromAccount() != null ? tx.getFromAccount().getAccountNum() : null;
+      final String toAccNum   = tx.getToAccount()   != null ? tx.getToAccount().getAccountNum()   : null;
 
-      final String fromAccountNum = tx.getFromAccount() != null ? tx.getFromAccount().getAccountNum() : null;
-      final String toAccountNum   = tx.getToAccount()   != null ? tx.getToAccount().getAccountNum()   : null;
+      TransactionType txType = null;
+      if (myAccountNum != null && myAccountNum.equals(fromAccNum)) {
+        txType = TransactionType.OUT; // 출금
+      } else if (myAccountNum != null && myAccountNum.equals(toAccNum)) {
+        txType = TransactionType.IN;  // 입금
+      }
 
-      boolean isOut = myAccountNum != null && myAccountNum.equals(fromAccountNum);
-      TransactionType txType = isOut ? TransactionType.OUT : TransactionType.IN;
+      String fromAccountNum   = null;
+      String fromAccountName  = null;
+      if (tx.getFromAccount() != null) {
+        fromAccountNum  = tx.getFromAccount().getAccountNum();
+        fromAccountName = tx.getFromAccount().getUser().getName();
+      }
 
-      String fromName =
-          tx.getFromPocket()  != null ? tx.getFromPocket().getAccount().getUser().getName()
-              : tx.getFromAccount() != null ? tx.getFromAccount().getUser().getName()
-              : null;
+      String toAccountNum   = null;
+      String toAccountName  = null;
+      if (tx.getToAccount() != null) {
+        toAccountNum  = tx.getToAccount().getAccountNum();
+        toAccountName = tx.getToAccount().getUser().getName();
+      }
 
-      String toName =
-          tx.getToPocket()  != null ? tx.getToPocket().getAccount().getUser().getName()
-              : tx.getToAccount() != null ? tx.getToAccount().getUser().getName()
-              : null;
+      Long   fromPocketId    = null;
+      String fromPocketName  = null;
+      if (tx.getFromPocket() != null) {
+        fromPocketId   = tx.getFromPocket().getPocketId();
+        fromPocketName = tx.getFromPocket().getPocketName();
+      }
 
-      Long   fromPocketId    = tx.getFromPocket()  != null ? tx.getFromPocket().getPocketId()   : null;
-      String fromPocketName  = tx.getFromPocket()  != null ? tx.getFromPocket().getPocketName() : null;
-      Long   toPocketId      = tx.getToPocket()    != null ? tx.getToPocket().getPocketId()     : null;
-      String toPocketName    = tx.getToPocket()    != null ? tx.getToPocket().getPocketName()   : null;
+      Long   toPocketId    = null;
+      String toPocketName  = null;
+      if (tx.getToPocket() != null) {
+        toPocketId   = tx.getToPocket().getPocketId();
+        toPocketName = tx.getToPocket().getPocketName();
+      }
 
       return AccountTxDto.builder()
           .transactionId(tx.getId())
           .transactionType(txType)
           .fromAccountNum(fromAccountNum)
-          .fromAccountName(fromName)
-          .toAccountName(toAccountNum)
-          .toAccountName(toName)
+          .fromAccountName(fromAccountName)
+          .toAccountNum(toAccountNum)
+          .toAccountName(toAccountName)
           .fromPocketId(fromPocketId)
           .fromPocketName(fromPocketName)
           .toPocketId(toPocketId)
