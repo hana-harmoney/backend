@@ -3,6 +3,7 @@ package com.example.hanaharmonybackend.web.dto;
 import java.util.List;
 
 public record ProfileResponse(
+        Long user_id,
         String nickname,
         String profile_img,
         List<Long> category_ids,

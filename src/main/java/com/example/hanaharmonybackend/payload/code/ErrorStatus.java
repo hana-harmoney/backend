@@ -18,7 +18,7 @@ public enum ErrorStatus implements BaseStatus {
     BAD_CREDENTIALS("E004", "아이디 또는 비밀번호가 올바르지 않습니다.", org.springframework.http.HttpStatus.UNAUTHORIZED),
     DUPLICATE_LOGIN_ID("E005", "이미 사용 중인 아이디입니다.", HttpStatus.CONFLICT),
     USER_NOT_FOUND("E006", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-
+    USER_DELETED("E008", "탈퇴한 계정입니다.",HttpStatus.CONFLICT),
     //Board 관련 error
     BOARD_NOT_FOUND("B001", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
     CATEGORY_NOT_FOUND("C001", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

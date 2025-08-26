@@ -38,6 +38,10 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(req.password(), user.getPassword())) {
             throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
         }
+        if (user.getIsDeleted()) {  // or Boolean.TRUE.equals(user.getIsDeleted())
+            throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
+            // 특정 메시지를 원하면 전용 에러코드 추가해서 던지세요 (ex. ACCOUNT_DELETED)
+        }
 
         String access  = jwtTokenProvider.createAccessToken(user.getId(), user.getLoginId());
         String refresh = jwtTokenProvider.createRefreshToken(user.getId(), user.getLoginId());
