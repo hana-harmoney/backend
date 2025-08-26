@@ -1,7 +1,5 @@
 package com.example.hanaharmonybackend.domain;
 
-import com.example.hanaharmonybackend.domain.DescImage;
-import com.example.hanaharmonybackend.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -56,5 +54,14 @@ public class Profile {
         if (reportCount == null) reportCount = 0;
     }
 
+    public void increaseReportCount() {
+        this.reportCount = this.reportCount + 1;
+    }
 
+    public void updateTrust(Double score) {
+        this.trust = this.trust + score;
+
+        if (this.trust < 0) this.trust = 0.0;
+        if (this.trust > 10) this.trust = 10.0;
+    }
 }

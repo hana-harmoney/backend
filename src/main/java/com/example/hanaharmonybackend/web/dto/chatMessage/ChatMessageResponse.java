@@ -1,6 +1,7 @@
 package com.example.hanaharmonybackend.web.dto.chatMessage;
 
 import com.example.hanaharmonybackend.domain.ChatMessage;
+import com.example.hanaharmonybackend.util.BannedWordFilter;
 import lombok.Builder;
 import lombok.Data;
 
@@ -23,7 +24,7 @@ public class ChatMessageResponse {
                 .roomId(chatMessage.getRoom().getId())
                 .senderId(chatMessage.getSender().getId())
                 .receiverId(chatMessage.getReceiver().getId())
-                .message(chatMessage.getMessage())
+                .message(BannedWordFilter.maskBannedWords(chatMessage.getMessage()))
                 .amount(chatMessage.getAmount())
                 .regdate(chatMessage.getCreatedAt())
                 .build();
