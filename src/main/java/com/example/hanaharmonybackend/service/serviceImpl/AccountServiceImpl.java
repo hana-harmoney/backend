@@ -11,6 +11,7 @@ import com.example.hanaharmonybackend.web.dto.TransactionType;
 import com.example.hanaharmonybackend.web.dto.account.AccountDetailResponse;
 import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 import com.example.hanaharmonybackend.web.dto.account.AccountTxDto;
+import com.example.hanaharmonybackend.web.dto.AccountNameResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,6 +126,16 @@ public class AccountServiceImpl implements AccountService {
         .accountBalance(account.getAccountBalance())
         .history(history)
         .build();
+  }
+
+  @Override
+  public AccountNameResponse getAccountOwnerName(String accountNum) {
+    String ownerName = accountRepository.findOwnerNameByAccountNum(accountNum)
+            .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
+
+    return AccountNameResponse.builder()
+            .name(ownerName)
+            .build();
   }
 }
 

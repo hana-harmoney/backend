@@ -18,8 +18,9 @@ public enum ErrorStatus implements BaseStatus {
     USER_DELETED("E008", "탈퇴한 계정입니다.",HttpStatus.CONFLICT),
     BAD_PASS("E009","비밀번호가 일치하지 않습니다", HttpStatus.BAD_REQUEST),
 
-    // Account 관련 error
+    // Account(송금) 관련 error
     ACCOUNT_NOT_FOUND("E007", "사용자의 계좌를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    INSUFFICIENT_ACCOUNT_BALANCE("E008", "계좌 잔액이 부족합니다.", HttpStatus.BAD_REQUEST),
 
     //Board 관련 error
     BOARD_NOT_FOUND("B001", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
@@ -30,6 +31,7 @@ public enum ErrorStatus implements BaseStatus {
     POCKET_NOT_FOUND("P001", "주머니가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     ACCOUNT_ACCESS_DENIED("P002", "계좌 소유자가 아닙니다.",HttpStatus.UNAUTHORIZED),
     POCKET_ACCESS_DENIED("P003","주머니 소유자가 아닙니다.", HttpStatus.UNAUTHORIZED),
+    INSUFFICIENT_POCKET_BALANCE("P004", "주머니 잔액이 부족합니다.", HttpStatus.BAD_REQUEST),
 
     //Chat 관련 error
     CHATROOM_NOT_FOUND("C001", "존재하지 않는 채팅방입니다.", HttpStatus.NOT_FOUND),
