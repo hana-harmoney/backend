@@ -5,6 +5,7 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ProfileService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.ProfileCreateRequest;
+import com.example.hanaharmonybackend.web.dto.ProfilePatchRequest;
 import com.example.hanaharmonybackend.web.dto.ProfileResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
@@ -29,11 +29,12 @@ public class ProfileController {
         return ApiResponse.success(profileService.create(me.getId(), req));
     }
 
+    /** (기존) 멀티파트 업로드로 프로필 생성 */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "application/json")
     public ApiResponse<ProfileResponse> createWithFiles(
             @RequestParam("nickname") @NotBlank String nickname,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "category_ids", required = false) List<String> categoryIds,
+            @RequestParam(value = "category_ids", required = false) List<Long> categoryIds,
             @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
             @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImages
     ) {
@@ -48,5 +49,25 @@ public class ProfileController {
     public ApiResponse<ProfileResponse> getMyProfile() {
         User me = SecurityUtil.getCurrentMember();
         return ApiResponse.success(profileService.getMyProfile(me.getId()));
+    }
+
+    /** 프로필 부분 수정 (PATCH /profile) */
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "application/json")
+    public ApiResponse<ProfileResponse> patchProfile(
+            @RequestParam(value = "nickname", required = false) String nickname,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "category_ids", required = false) List<Long> categoryIds,
+            @RequestParam(value = "password", required = false) String password,
+            @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
+            // 소개 사진 조작
+            @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImagesAdd,
+            @RequestParam(value = "desc_images_delete_ids", required = false) List<Long> descImagesDeleteIds
+    ) {
+        User me = SecurityUtil.getCurrentMember();
+        var req = ProfilePatchRequest.of(
+                nickname, description, categoryIds, password,
+                profileImg, descImagesAdd, descImagesDeleteIds
+        );
+        return ApiResponse.success(profileService.patch(me.getId(), req));
     }
 }

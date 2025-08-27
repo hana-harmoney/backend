@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -57,6 +58,28 @@ public class S3FileStorageServiceImpl implements FileStorageService {
             return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
         } catch (Exception e) {
             throw new CustomException(ErrorStatus.SERVER_ERROR);
+        }
+    }
+    @Override
+    public void delete(String urlOrKey) {
+        String key = toKey(urlOrKey);
+        if (key == null || key.isBlank()) return;
+        s3Template.deleteObject(bucket, key);
+    }
+    private String toKey(String urlOrKey) {
+        try {
+            if (urlOrKey.startsWith("s3://")) {
+                // s3://bucket/key
+                int i = urlOrKey.indexOf('/', 5);
+                return (i > 0) ? urlOrKey.substring(i + 1) : null;
+            }
+            if (urlOrKey.startsWith("http")) {
+                String path = new URI(urlOrKey).getPath(); // /key...
+                return path != null && path.startsWith("/") ? path.substring(1) : path;
+            }
+            return urlOrKey; // 이미 key라고 가정
+        } catch (Exception e) {
+            return urlOrKey;
         }
     }
 }

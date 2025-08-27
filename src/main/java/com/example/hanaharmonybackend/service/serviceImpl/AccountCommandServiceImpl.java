@@ -37,7 +37,10 @@ public class AccountCommandServiceImpl implements AccountCommandService {
   public void delete(Long accountId, Long requesterId) {
 	var acc = accountRepository.findById(accountId)
 		.orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
-//	guardOwner(acc.getUser().getId(), requesterId);
-//	acc.setDeleted(true); // 소프트 삭제
+
+	if (!acc.getUser().getId().equals(requesterId)) {
+	  throw new CustomException(ErrorStatus.ACCOUNT_ACCESS_DENIED);
+	}
+	acc.setDeleted(true);
   }
 }

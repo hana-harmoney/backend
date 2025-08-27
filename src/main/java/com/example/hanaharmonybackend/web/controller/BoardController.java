@@ -1,4 +1,6 @@
 package com.example.hanaharmonybackend.web.controller;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 
 import com.example.hanaharmonybackend.domain.User;
@@ -14,6 +16,7 @@ import com.example.hanaharmonybackend.util.SecurityUtil;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/board")
@@ -23,11 +26,21 @@ public class BoardController {
     private final BoardService boardService;
 
     //일자리 등록
-    @PostMapping
-    public ResponseEntity<ApiResponse<?>> createBoard(@RequestBody @Valid BoardCreateRequest request) {
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<?>> createBoard(
+            @RequestPart("request") String requestJson,
+            @RequestPart("image") MultipartFile image) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        BoardCreateRequest  request;
+        try {
+            request = objectMapper.readValue(requestJson, BoardCreateRequest.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid request format", e);
+        }
+
         User user = SecurityUtil.getCurrentMember();
         String loginId = user.getLoginId();
-
+        request.setImage(image);
         BoardResponse response = boardService.createBoard(request, loginId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }

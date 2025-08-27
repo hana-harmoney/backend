@@ -23,7 +23,7 @@ public class Account {
     @Column(name = "account_id")
     private Long id;
 
-  @Column(name = "account_num", nullable = false, unique = true, length = 255)
+  @Column(name = "account_num", nullable = false, unique = true)
   private String accountNum;
 
   @Column(name = "account_balance", nullable = false)
@@ -34,6 +34,7 @@ public class Account {
   private LocalDateTime createdAt;
 
   @Column(name = "is_deleted", nullable = false)
+  @Setter
   private boolean deleted = false;
 
   @OneToOne(fetch = FetchType.LAZY)
