@@ -1,5 +1,7 @@
 package com.example.hanaharmonybackend.domain;
 
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,33 +22,33 @@ import java.util.List;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
-    private Long id;
+    private Long accountId;
 
-  @Column(name = "account_num", nullable = false, unique = true)
-  private String accountNum;
+    @Column(name = "account_num", nullable = false, unique = true)
+    private String accountNum;
 
-  @Column(name = "account_balance", nullable = false)
-  private Long accountBalance;
+    @Column(name = "account_balance", nullable = false)
+    private Long accountBalance;
 
-  @CreatedDate
-  @Column(name = "created_at", updatable = false, nullable = false)
-  private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
 
-  @Column(name = "is_deleted", nullable = false)
-  @Setter
-  private boolean deleted = false;
+    @Column(name = "is_deleted", nullable = false)
+    @Setter
+    private boolean deleted = false;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false, unique = true)
-  private User user;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Pocket> pockets = new ArrayList<>();
-    // === 비즈니스 메서드 ===
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pocket> pockets = new ArrayList<>();
+
+    // === 입/출금 메서드 ===
     public void withdraw(Long amount) {
         if (this.accountBalance < amount) {
-            throw new IllegalStateException("잔액 부족");
+            throw new CustomException(ErrorStatus.INSUFFICIENT_ACCOUNT_BALANCE);
         }
         this.accountBalance -= amount;
     }

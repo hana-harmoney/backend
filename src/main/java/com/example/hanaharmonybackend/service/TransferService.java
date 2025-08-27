@@ -1,8 +1,10 @@
 package com.example.hanaharmonybackend.service;
 
-import com.example.hanaharmonybackend.web.dto.TransferData;
-import com.example.hanaharmonybackend.web.dto.TransferRequest;
+import com.example.hanaharmonybackend.web.dto.transfer.*;
 
 public interface TransferService {
-    TransferData transfer(Long myAccountId, TransferRequest request);
+    AccountTransferResponse transferAccountToAccount(AccountTransferRequest request);
+    PocketTransferResponse transferAccountToPocket(Long pocketId, PocketTransferRequest request);
+    PocketTransferResponse transferPocketToAccount(Long pocketId, PocketTransferRequest request);
 }
+
