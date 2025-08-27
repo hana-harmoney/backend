@@ -40,8 +40,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
         }
         if (user.getIsDeleted()) {  // or Boolean.TRUE.equals(user.getIsDeleted())
-            throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
-            // 특정 메시지를 원하면 전용 에러코드 추가해서 던지세요 (ex. ACCOUNT_DELETED)
+            throw new CustomException(USER_DELETED);
         }
 
         String access  = jwtTokenProvider.createAccessToken(user.getId(), user.getLoginId());
@@ -70,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
 
         // 소프트 삭제
         user.setIsDeleted(true);
-        // 필요 시: user.setDeleteReason(reason); user.setDeletedAt(LocalDateTime.now());
 
         userRepository.save(user);   // 명시 저장
         userRepository.flush();      // 즉시 반영 (선택)
