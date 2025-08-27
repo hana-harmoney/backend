@@ -4,11 +4,9 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.payload.code.SuccessStatus;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.LoginRequest;
-import com.example.hanaharmonybackend.web.dto.LoginResponse;
-import com.example.hanaharmonybackend.web.dto.SignupRequest;
-import com.example.hanaharmonybackend.web.dto.SignupResponse;
+import com.example.hanaharmonybackend.web.dto.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +26,11 @@ public class AuthController {
         LoginResponse data = authService.login(req);
         return new ApiResponse<>(SuccessStatus.OK.getCode(), "로그인에 성공했습니다.", data);
     }
-    @PostMapping(value = "/withdraw", produces = "application/json")
-    public ApiResponse<String> withdraw() {
+
+    @PostMapping(value = "/withdraw", consumes = "application/json", produces = "application/json")
+    public ApiResponse<String> withdraw(@RequestBody WithdrawRequest req) {
         var me = SecurityUtil.getCurrentMember();
-        authService.withdraw(me.getId(), null);
+        authService.withdraw(me.getId(), req.current_password());
         return new ApiResponse<>(SuccessStatus.OK.getCode(), "회원탈퇴에 성공했습니다.", "OK");
     }
 

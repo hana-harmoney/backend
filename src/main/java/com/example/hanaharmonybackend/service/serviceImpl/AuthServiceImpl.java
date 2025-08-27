@@ -17,8 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.hanaharmonybackend.payload.code.ErrorStatus.INVALID_INPUT;
-import static com.example.hanaharmonybackend.payload.code.ErrorStatus.USER_NOT_FOUND;
+import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +40,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
         }
         if (user.getIsDeleted()) {  // or Boolean.TRUE.equals(user.getIsDeleted())
-            throw new CustomException(ErrorStatus.BAD_CREDENTIALS);
-            // 특정 메시지를 원하면 전용 에러코드 추가해서 던지세요 (ex. ACCOUNT_DELETED)
+            throw new CustomException(USER_DELETED);
         }
 
         String access  = jwtTokenProvider.createAccessToken(user.getId(), user.getLoginId());
@@ -53,26 +51,31 @@ public class AuthServiceImpl implements AuthService {
         return new LoginResponse(access, refresh, user.getId(), user.getName(), hasProfile);
     }
 
+
     @Override
-    @Transactional // readOnly 금지
-    public void withdraw(Long userId, String reason) {
+    public void withdraw(Long userId, String currentPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (user.getIsDeleted()) { // 우리가 추가한 게터
-            throw new CustomException(INVALID_INPUT);
+        // 이미 탈퇴
+        if (user.getIsDeleted()) {
+            throw new CustomException(USER_DELETED); // 메시지 노출 막기용 (원하면 별도 코드 추가)
         }
 
-        user.setIsDeleted(true);    // 우리가 추가한 세터
-        userRepository.save(user);  // 명시 저장(안전)
-        userRepository.flush();     // 즉시 반영(선택)
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new CustomException(BAD_PASS);
+        }
 
-        accountRepository.softDeleteByUserId(userId);
+        // 소프트 삭제
+        user.setIsDeleted(true);
 
-        // 현재 세션/컨텍스트에 캐시된 이전 사용자 객체 제거
+        userRepository.save(user);   // 명시 저장
+        userRepository.flush();      // 즉시 반영 (선택)
+
+        // 현재 세션 종료
         SecurityContextHolder.clearContext();
     }
-
 
     @Override
     @Transactional
