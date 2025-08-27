@@ -4,10 +4,7 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.payload.code.SuccessStatus;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.LoginRequest;
-import com.example.hanaharmonybackend.web.dto.LoginResponse;
-import com.example.hanaharmonybackend.web.dto.SignupRequest;
-import com.example.hanaharmonybackend.web.dto.SignupResponse;
+import com.example.hanaharmonybackend.web.dto.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +33,5 @@ public class AuthController {
         authService.withdraw(me.getId(), req.current_password());
         return new ApiResponse<>(SuccessStatus.OK.getCode(), "회원탈퇴에 성공했습니다.", "OK");
     }
-    public record WithdrawRequest(
-            @NotBlank String current_password
-    ) {}
 
 }
