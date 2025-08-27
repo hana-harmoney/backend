@@ -69,13 +69,11 @@ public class BoardController {
 
     //내 글조회
     @GetMapping("/my")
-    public ResponseEntity<Map<String, Object>> getMyBoards() {
+    public ResponseEntity<ApiResponse<?>> getMyBoards() {
         User user = SecurityUtil.getCurrentMember();
-        List<BoardResponse> boards = boardService.getBoardsByUserId(user.getId());
-        Map<String, Object> result = Map.of(
-            "message", "내가 작성한 게시글 목록을 성공적으로 불러왔습니다.",
-            "boardList", boards
-        );
-        return ResponseEntity.ok(result);
+        List<BoardResponse> boardList = boardService.getBoardsByUserId(user.getId());
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("boardList", boardList);
+        return ResponseEntity.ok().body(ApiResponse.success(result));
     }
 }

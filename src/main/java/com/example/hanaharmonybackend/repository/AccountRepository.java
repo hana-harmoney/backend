@@ -12,6 +12,14 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
+  @EntityGraph(attributePaths = "pockets")
+  Optional<Account> findByUser_IdAndDeletedFalse(Long userId);
+
+  boolean existsByAccountNum(String accountNum);
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
+  @Query("update Account a set a.deleted = true where a.user.id = :userId and a.deleted = false")
+  int softDeleteByUserId(@Param("userId") Long userId);
     // 계좌 번호 입력시, 예금주 확인 가능
     @Query("SELECT a.user.name FROM Account a " +
             "WHERE a.accountNum = :accountNum AND a.deleted = false")
@@ -25,13 +33,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     // 계좌번호 + 사용자 이름으로 계좌 찾기
     Optional<Account> findByAccountNumAndUser_Name(String accountNum, String userName);
-
-    @EntityGraph(attributePaths = "pockets")
-    Optional<Account> findByUser_IdAndDeletedFalse(Long userId);
-
-    boolean existsByAccountNum(String accountNum);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("update Account a set a.deleted = true where a.user.id = :userId and a.deleted = false")
-    int softDeleteByUserId(@Param("userId") Long userId);
 }

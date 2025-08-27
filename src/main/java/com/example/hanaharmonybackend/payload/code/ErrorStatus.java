@@ -16,6 +16,7 @@ public enum ErrorStatus implements BaseStatus {
     DUPLICATE_LOGIN_ID("E005", "이미 사용 중인 아이디입니다.", HttpStatus.CONFLICT),
     USER_NOT_FOUND("E006", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     USER_DELETED("E008", "탈퇴한 계정입니다.",HttpStatus.CONFLICT),
+    BAD_PASS("E009","비밀번호가 일치하지 않습니다", HttpStatus.BAD_REQUEST),
 
     // Account(송금) 관련 error
     ACCOUNT_NOT_FOUND("E007", "사용자의 계좌를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

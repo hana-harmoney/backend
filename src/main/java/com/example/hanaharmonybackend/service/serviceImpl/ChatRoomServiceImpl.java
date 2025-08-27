@@ -77,18 +77,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
         }
 
+        User otherUser = room.getUser1().getId().equals(loginUser.getId())
+                ? room.getUser2()
+                : room.getUser1();
+
         Board board = room.getBoard();
         User writer = board.getUser();
-        Profile writerProfile = writer.getProfile();
+        Profile otherUserProfile = otherUser.getProfile();
 
         return ChatRoomDetailResponse.builder()
-                .boardId(board.getBoardId())
-                .writerId(writer.getId())
-                .nickname(writerProfile.getNickname())
-                .profileUrl(writerProfile.getProfileImg())
-                .title(board.getTitle())
-                .wage(board.getWage())
-                .address(board.getAddress())
+                .boardId(board.getBoardId()) // 게시글 ID
+                .writerId(writer.getId()) // 게시글 작성자 ID
+                .nickname(otherUser.getProfile().getNickname()) // 채팅 상대 닉네임
+                .profileUrl(otherUserProfile.getProfileImg()) // 채팅 상대 프로필 사진
+                .title(board.getTitle()) // 게시글 제목
+                .wage(board.getWage()) // 게시글 시급
+                .address(board.getAddress()) // 게시글 주소
                 .build();
     }
 
