@@ -3,9 +3,11 @@ package com.example.hanaharmonybackend.web.controller;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.service.TransferService;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageListResponse;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageRequest;
 import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
+import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageTransferResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +29,8 @@ public class ChatController {
 
     @Operation(summary = "채팅방 생성", description = "새로운 채팅방을 개설합니다.")
     @PostMapping("")
-    public ApiResponse<ChatRoomCreateResponse> createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
-        return ApiResponse.success(chatRoomService.createChatRoom(chatRoomRequest));
+    public ApiResponse<ChatRoomCreateResponse> createChatRoom(@RequestBody ChatRoomRequest request) {
+        return ApiResponse.success(chatRoomService.createChatRoom(request));
     }
 
     @Operation(summary = "채팅방 목록 조회", description = "유저가 참여한 채팅방리스트를 조회합니다.")
@@ -57,8 +59,8 @@ public class ChatController {
 
     @Operation(summary = "채팅 상대 거래 후기", description = "채팅방의 상대에 대한 거래 후기를 남깁니다.")
     @PostMapping("/{roomId}/review")
-    public ApiResponse<ChatRoomReviewResponse> review(@PathVariable Long roomId, @RequestBody ChatRoomReviewRequest reviewRequest) {
-        return ApiResponse.success(chatRoomService.reviewChatRoom(roomId, reviewRequest));
+    public ApiResponse<ChatRoomReviewResponse> review(@PathVariable Long roomId, @RequestBody ChatRoomReviewRequest request) {
+        return ApiResponse.success(chatRoomService.reviewChatRoom(roomId, request));
     }
 
     @Operation(summary = "채팅 메세지 전송", description = "채팅 메세지를 전송합니다.")
@@ -71,5 +73,18 @@ public class ChatController {
                 "/sub/chat/room/" + request.getRoomId(),
                 saved
         );
+    }
+
+    @Operation(summary = "채팅 송금", description = "채팅을 통해 송금합니다.")
+    @PostMapping("/{roomId}/transfer/send")
+    public ApiResponse<ChatMessageTransferResponse> transferAccountToAccount(@PathVariable Long roomId) {
+        ChatMessageTransferResponse response = chatMessageService.chatTransferAccountToAccount(roomId);
+
+        messagingTemplate.convertAndSend(
+                "/sub/chat/room/" + roomId,
+                response.getChatMessage()
+        );
+
+        return ApiResponse.success(response);
     }
 }

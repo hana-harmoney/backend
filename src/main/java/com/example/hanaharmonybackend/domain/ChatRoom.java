@@ -35,4 +35,8 @@ public class ChatRoom extends BaseEntity {
         this.board = board;
         this.isReceived = isReceived;
     }
+
+    public void updateIsReceived(Boolean isReceived) {
+        this.isReceived = isReceived;
+    }
 }
