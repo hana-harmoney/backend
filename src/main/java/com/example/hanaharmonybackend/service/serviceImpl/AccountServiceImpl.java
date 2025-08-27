@@ -42,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
         .account(account.getAccountNum())
         .pocketLists(account.getPockets().stream()
             .map(p->AccountResponse.PocketDto.builder()
+                    .pocketId(p.getPocketId())
                 .name(p.getPocketName())
                 .amount(p.getCurrentAmount())
                 .build())
