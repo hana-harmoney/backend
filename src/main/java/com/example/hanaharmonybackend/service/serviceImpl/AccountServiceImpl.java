@@ -39,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
 
     return AccountResponse.builder()
         .totalAssets(totalAssets)
+        .accountBalance(account.getAccountBalance())
         .account(account.getAccountNum())
         .pocketLists(account.getPockets().stream()
             .map(p->AccountResponse.PocketDto.builder()
