@@ -20,8 +20,6 @@ public enum ErrorStatus implements BaseStatus {
     SAME_PASS("E010","동일한 비밀번호 입니다", HttpStatus.UNAUTHORIZED),
   
     // Account 관련 error
-    USER_DELETED("E008", "탈퇴한 계정입니다.", HttpStatus.CONFLICT),
-    BAD_PASS("E009", "비밀번호가 일치하지 않습니다", HttpStatus.BAD_REQUEST),
     ACCOUNT_NOT_FOUND("E007", "사용자의 계좌를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     INSUFFICIENT_ACCOUNT_BALANCE("E008", "계좌 잔액이 부족합니다.", HttpStatus.BAD_REQUEST),
 
