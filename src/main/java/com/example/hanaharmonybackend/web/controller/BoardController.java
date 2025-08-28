@@ -40,7 +40,9 @@ public class BoardController {
     @Operation(summary = "일자리 단건 조회")
     @GetMapping("/{boardId}")
     public ResponseEntity<ApiResponse<?>> getBoardById(@PathVariable Long boardId) {
-        BoardResponse response = boardService.getBoardById(boardId);
+        User user = SecurityUtil.getCurrentMember();
+        Long userId = user.getId();
+        BoardResponse response = boardService.getBoardById(boardId, userId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
