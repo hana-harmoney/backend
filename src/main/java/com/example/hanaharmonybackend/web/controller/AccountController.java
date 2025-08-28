@@ -6,6 +6,7 @@ import com.example.hanaharmonybackend.service.AccountService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.account.AccountDetailResponse;
 import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
   private final AccountService accountService;
 
+  @Operation(summary = "내 계좌/주머니 리스트 조회")
   @GetMapping
   public ApiResponse<AccountResponse> getMyAccount(){
 	User user = SecurityUtil.getCurrentMember();
 	return ApiResponse.success(accountService.getMyAccount(user.getId()));
   }
 
+  @Operation(summary = "내 계좌 내역 조회")
   @GetMapping("/history")
   public ApiResponse<AccountDetailResponse> detail(@RequestParam Long accountId){
 	Long userId = SecurityUtil.getCurrentMember().getId();
 	AccountDetailResponse res = accountService.getDetail(userId, accountId);
 	return ApiResponse.success(res);
   }
-
 }
