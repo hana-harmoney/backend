@@ -4,10 +4,7 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.service.TransferService;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageListResponse;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageRequest;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageTransferResponse;
+import com.example.hanaharmonybackend.web.dto.chatMessage.*;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,8 +74,8 @@ public class ChatController {
 
     @Operation(summary = "채팅 송금", description = "채팅을 통해 송금합니다.")
     @PostMapping("/{roomId}/transfer/send")
-    public ApiResponse<ChatMessageTransferResponse> transferAccountToAccount(@PathVariable Long roomId) {
-        ChatMessageTransferResponse response = chatMessageService.chatTransferAccountToAccount(roomId);
+    public ApiResponse<ChatMessageTransferResponse> transferAccountToAccount(@PathVariable Long roomId, @RequestBody ChatMessageTransferRequest request) {
+        ChatMessageTransferResponse response = chatMessageService.chatTransferAccountToAccount(roomId, request);
 
         messagingTemplate.convertAndSend(
                 "/sub/chat/room/" + roomId,
