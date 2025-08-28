@@ -21,17 +21,16 @@ import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AccountCommandService accountCommandService;
-    private final AccountRepository accountRepository;
     private final ProfileRepository profileRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest req) {
         User user = userRepository.findByLoginId(req.loginId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.BAD_CREDENTIALS));
@@ -53,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
+    @Transactional
     public void withdraw(Long userId, String currentPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));

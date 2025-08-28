@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -74,6 +75,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅방 송금
     @Override
+    @Transactional
     public ChatMessageTransferResponse chatTransferAccountToAccount(Long roomId, ChatMessageTransferRequest request) {
         User loginUser = SecurityUtil.getCurrentMember();
 

@@ -29,13 +29,12 @@ import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
     private final FileStorageService fileStorage;
-    private final DescImageRepository descImageRepository;
     private final ObjectMapper om = new ObjectMapper();
     private final PasswordEncoder passwordEncoder;
     /**
@@ -44,6 +43,7 @@ public class ProfileServiceImpl implements ProfileService {
      * - img_url: String URL 리스트 (DescImage로 저장)
      */
     @Override
+    @Transactional
     public ProfileResponse create(Long currentUserId, ProfileCreateRequest req) {
         if (profileRepository.existsByUser_Id(currentUserId)) {
             throw new IllegalArgumentException("이미 프로필이 등록되어 있습니다.");
@@ -75,6 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
      * - desc_images: List<MultipartFile> (선택)
      */
     @Override
+    @Transactional
     public ProfileResponse createWithFiles(Long currentUserId,
                                            String nickname,
                                            String description,
@@ -115,7 +116,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ProfileResponse getMyProfile(Long currentUserId) {
         Profile p = profileRepository.findByUser_Id(currentUserId)
                 .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
@@ -163,6 +163,7 @@ public class ProfileServiceImpl implements ProfileService {
         );
     }
     @Override
+    @Transactional
     public ProfileResponse patch(Long currentUserId, ProfilePatchRequest req) {
         Profile p = profileRepository.findByUser_Id(currentUserId)
                 .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));

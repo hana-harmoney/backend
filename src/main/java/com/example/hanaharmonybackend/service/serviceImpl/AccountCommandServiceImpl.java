@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AccountCommandServiceImpl implements AccountCommandService {
 
   private final AccountRepository accountRepository;
   private final AccountNumberGenerator generator;
 
   @Override
-  @Transactional
   public Account createFor(User user) {
 	for (int i=0; i<3; i++){
 	  String num = generator.generateUnique();
