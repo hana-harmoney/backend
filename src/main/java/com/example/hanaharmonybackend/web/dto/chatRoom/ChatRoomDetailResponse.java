@@ -9,6 +9,7 @@ public class ChatRoomDetailResponse {
     Long boardId;
     Long writerId;
     String nickname;
+    String name;
     String profileUrl;
     String title;
     Long wage;
