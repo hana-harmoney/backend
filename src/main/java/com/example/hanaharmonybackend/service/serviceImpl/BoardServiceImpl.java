@@ -16,6 +16,7 @@ import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
@@ -34,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final FileStorageService fileStorageService;
 
     @Override
+    @Transactional
     public BoardResponse createBoard(BoardCreateRequest request, String userEmail) {
         User user = userRepository.findByLoginId(userEmail)
                 .orElseThrow(() -> new CustomException(ErrorStatus.USER_NOT_FOUND));
@@ -93,7 +96,6 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BoardResponse getBoardById(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
@@ -122,18 +124,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<BoardResponse> getAllBoards() {
-        List<Board> boards = boardRepository.findAll();
+        List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<BoardResponse> getBoardsByUserId(Long userId) {
-        List<Board> boards = boardRepository.findByUser_Id(userId);
+        List<Board> boards = boardRepository.findByUser_Id(userId, Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());

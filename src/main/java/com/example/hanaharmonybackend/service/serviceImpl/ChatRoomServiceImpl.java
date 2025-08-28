@@ -12,12 +12,14 @@ import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
@@ -25,6 +27,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ProfileRepository profileRepository;
 
     // 채팅방 생성
+    @Override
+    @Transactional
     public ChatRoomCreateResponse createChatRoom(ChatRoomRequest request) {
         Board board = boardRepository.findById(request.getBoardId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
@@ -100,6 +104,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     // 채팅 상대 신고
     @Override
+    @Transactional
     public ChatRoomReportResponse reportChatRoom(Long roomId) {
         User loginUser = SecurityUtil.getCurrentMember();
         ChatRoom room = chatRoomRepository.findById(roomId)
@@ -124,6 +129,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     // 채팅 거래 후기
     @Override
+    @Transactional
     public ChatRoomReviewResponse reviewChatRoom(Long roomId, ChatRoomReviewRequest request) {
         User loginUser = SecurityUtil.getCurrentMember();
         ChatRoom room = chatRoomRepository.findById(roomId)
