@@ -42,7 +42,10 @@ public class BoardServiceImpl implements BoardService {
         Profile profile = profileRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.PROFILE_NOT_FOUND));
 
-        String imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+        String imageUrl = null;
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+        }
 
         Board board = Board.builder()
                 .title(request.getTitle())
@@ -51,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .address(request.getAddress())
-                .imageUrl(imageUrl)
+                .imageUrl(imageUrl) //null 허용
                 .user(user)
                 .category(category)
                 .status(false)
