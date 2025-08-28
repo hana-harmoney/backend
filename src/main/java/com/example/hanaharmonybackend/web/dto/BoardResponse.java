@@ -22,6 +22,7 @@ public class BoardResponse {
     private String category;
     private boolean status;
     private String profileUrl;
+    private boolean isMine;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

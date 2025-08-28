@@ -82,6 +82,7 @@ public class BoardServiceImpl implements BoardService {
                 .createdAt(saved.getCreatedAt())
                 .updatedAt(saved.getUpdatedAt())
                 .profileUrl(board.getUser().getProfile().getProfileImg())
+                .isMine(saved.getUser().getLoginId().equals(userEmail))
                 .build();
     }
 
@@ -99,13 +100,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardResponse getBoardById(Long boardId) {
+    public BoardResponse getBoardById(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
-        return toResponse(board);
+        boolean isMine = board.getUser().getId().equals(userId);
+        return toResponse(board, isMine);
     }
 
-    private BoardResponse toResponse(Board board) {
+    private BoardResponse toResponse(Board board, boolean isMine) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
                 .nickname(board.getUser().getProfile().getNickname())
@@ -123,6 +125,7 @@ public class BoardServiceImpl implements BoardService {
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
+                .isMine(isMine)
                 .build();
     }
 
@@ -130,7 +133,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponse> getAllBoards() {
         List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(this::toResponse)
+                .map(board -> toResponse(board, false))
                 .collect(Collectors.toList());
     }
 
@@ -138,7 +141,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponse> getBoardsByUserId(Long userId) {
         List<Board> boards = boardRepository.findByUser_Id(userId, Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(this::toResponse)
+                .map(board -> toResponse(board, false))
                 .collect(Collectors.toList());
     }
 }
