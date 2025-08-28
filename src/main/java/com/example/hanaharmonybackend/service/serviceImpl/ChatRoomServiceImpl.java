@@ -88,7 +88,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return ChatRoomDetailResponse.builder()
                 .boardId(board.getBoardId()) // 게시글 ID
                 .writerId(writer.getId()) // 게시글 작성자 ID
-                .nickname(otherUser.getProfile().getNickname()) // 채팅 상대 닉네임
+                .name(otherUser.getName()) // 채팅 상대 이름
+                .nickname(otherUserProfile.getNickname()) // 채팅 상대 닉네임
                 .profileUrl(otherUserProfile.getProfileImg()) // 채팅 상대 프로필 사진
                 .title(board.getTitle()) // 게시글 제목
                 .wage(board.getWage()) // 게시글 시급
