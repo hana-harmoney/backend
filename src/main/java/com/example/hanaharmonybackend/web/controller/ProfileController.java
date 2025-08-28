@@ -57,7 +57,8 @@ public class ProfileController {
             @RequestParam(value = "nickname", required = false) String nickname,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "category_ids", required = false) List<Long> categoryIds,
-            @RequestParam(value = "password", required = false) String password,
+            @RequestParam(value = "current_password", required = false) String currentPassword,
+            @RequestParam(value = "new_password",     required = false) String newPassword,
             @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
             // 소개 사진 조작
             @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImagesAdd,
@@ -65,7 +66,7 @@ public class ProfileController {
     ) {
         User me = SecurityUtil.getCurrentMember();
         var req = ProfilePatchRequest.of(
-                nickname, description, categoryIds, password,
+                nickname, description, categoryIds, currentPassword,newPassword,
                 profileImg, descImagesAdd, descImagesDeleteIds
         );
         return ApiResponse.success(profileService.patch(me.getId(), req));

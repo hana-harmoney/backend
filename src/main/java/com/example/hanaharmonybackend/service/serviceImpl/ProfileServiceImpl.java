@@ -25,8 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 
-
-import static com.example.hanaharmonybackend.payload.code.ErrorStatus.USER_NOT_FOUND;
+import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -168,16 +167,39 @@ public class ProfileServiceImpl implements ProfileService {
         Profile p = profileRepository.findByUser_Id(currentUserId)
                 .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
 
-        // 1) 텍스트 필드 (전달되었을 때만 수정)
+        // 1) 텍스트 필드
         if (req.nickname() != null) p.setNickname(req.nickname());
         if (req.description() != null) p.setDescription(req.description());
 
-        // 2) 비밀번호 (원하면 UserService 주입 후 여기서 변경 호출)
-        if (StringUtils.hasText(req.rawPassword())) {
+        // 2) 비밀번호
+        if (StringUtils.hasText(req.newPassword())) {
+            if (!StringUtils.hasText(req.currentPassword())) {
+                throw new CustomException(INVALID_INPUT) ;
+            }
+
             User me = userRepository.findById(currentUserId)
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-            me.setPassword(passwordEncoder.encode(req.rawPassword())); // BCrypt
-            // userRepository.save(me); // @Transactional이면 더티체킹으로 자동 반영, 명시 save 생략 가능
+
+            // 탈퇴 계정 차단
+            if (me.getIsDeleted()) {
+                throw new CustomException(USER_DELETED);
+            }
+
+            // 현재 비밀번호 검증
+            if (!passwordEncoder.matches(req.currentPassword(), me.getPassword())) {
+                throw new CustomException(BAD_PASS);
+            }
+
+            // 새 비밀번호 규칙 체크
+            if (req.newPassword().length() < 8 || req.newPassword().length() > 20) {
+                throw new CustomException(INVALID_INPUT);
+            }
+            // 이전 비번과 동일 금지
+            if (passwordEncoder.matches(req.newPassword(), me.getPassword())) {
+                throw new CustomException(SAME_PASS);
+            }
+            me.setPassword(passwordEncoder.encode(req.newPassword()));
+            // @Transactional 이면 더티체킹으로 커밋 시 반영됩니다.
         }
         // 3) 카테고리 (전달 시 교체) — 현재 스키마가 JSON String이라면 기존 헬퍼 활용
         if (req.categoryIds() != null) {
