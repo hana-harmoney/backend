@@ -1,5 +1,7 @@
 package com.example.hanaharmonybackend.domain;
 
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +29,16 @@ public class Pocket extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "account_id", nullable = false)
   private Account account;
+
+  // === 주머니 꺼내기/채우기 메서드 ===
+  public void withdraw(Long amount) {
+    if (this.currentAmount < amount) {
+      throw new CustomException(ErrorStatus.INSUFFICIENT_POCKET_BALANCE);
+    }
+    this.currentAmount -= amount;
+  }
+
+  public void deposit(Long amount) {
+    this.currentAmount += amount;
+  }
 }

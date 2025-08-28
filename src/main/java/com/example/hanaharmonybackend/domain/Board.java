@@ -65,4 +65,8 @@ public class Board {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void updateStatus(Boolean status) {
+        this.status = status;
+    }
 }

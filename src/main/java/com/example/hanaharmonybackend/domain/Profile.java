@@ -58,6 +58,10 @@ public class Profile {
         this.reportCount = this.reportCount + 1;
     }
 
+    public void increaseMatchCount() {
+        this.matchCount = this.matchCount + 1;
+    }
+
     public void updateTrust(Double score) {
         this.trust = this.trust + score;
 

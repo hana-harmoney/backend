@@ -93,6 +93,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .title(board.getTitle()) // 게시글 제목
                 .wage(board.getWage()) // 게시글 시급
                 .address(board.getAddress()) // 게시글 주소
+                .isReceived(room.getIsReceived()) // 송금 여부
                 .build();
     }
 
