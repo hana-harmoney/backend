@@ -29,20 +29,9 @@ public class BoardController {
     //일자리 등록
     @Operation(summary = "일자리 등록")
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<?>> createBoard(
-            @RequestPart("request") String requestJson,
-            @RequestPart("image") MultipartFile image) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        BoardCreateRequest  request;
-        try {
-            request = objectMapper.readValue(requestJson, BoardCreateRequest.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Invalid request format", e);
-        }
-
+    public ResponseEntity<ApiResponse<?>> createBoard(@ModelAttribute BoardCreateRequest request) {
         User user = SecurityUtil.getCurrentMember();
         String loginId = user.getLoginId();
-        request.setImage(image);
         BoardResponse response = boardService.createBoard(request, loginId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
