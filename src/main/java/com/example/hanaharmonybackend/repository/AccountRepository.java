@@ -15,6 +15,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
   @EntityGraph(attributePaths = "pockets")
   Optional<Account> findByUser_IdAndDeletedFalse(Long userId);
 
+  Optional<Account> findByAccountIdAndDeletedFalse(Long id);
+
   boolean existsByAccountNum(String accountNum);
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)

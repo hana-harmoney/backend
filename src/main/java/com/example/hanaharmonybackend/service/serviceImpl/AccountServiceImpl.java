@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountDetailResponse getDetail(Long requesterId, Long accountId) {
-    Account account = accountRepository.findByUser_IdAndDeletedFalse(accountId)
+    Account account = accountRepository.findByAccountIdAndDeletedFalse(accountId)
         .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
 
     if (!account.getUser().getId().equals(requesterId)) {
