@@ -1,4 +1,5 @@
 package com.example.hanaharmonybackend.web.controller;
+import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 
 import com.example.hanaharmonybackend.domain.User;
@@ -36,7 +37,7 @@ public class BoardController {
     @PatchMapping(value = "/{boardId}", consumes = "multipart/form-data")
     public ResponseEntity<ApiResponse<?>> updateBoard(
             @PathVariable Long boardId,
-            @ModelAttribute BoardCreateRequest request
+            @ModelAttribute BoardUpdateRequest request
     ) {
         User user = SecurityUtil.getCurrentMember();
         Long userId = user.getId();
