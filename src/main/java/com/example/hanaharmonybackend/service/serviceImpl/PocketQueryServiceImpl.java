@@ -43,20 +43,21 @@ public class PocketQueryServiceImpl implements PocketQueryService {
 			  : TransactionType.IN;
 
 	  String fromName =
-		  tx.getFromPocket()  != null ? tx.getFromPocket().getPocketName()
-			  : tx.getFromAccount() != null ? tx.getFromAccount().getAccountNum()
+		  tx.getFromPocket() != null ? tx.getFromPocket().getPocketName()
+			  : tx.getFromAccount() != null ? tx.getFromAccount().getUser().getName()
 			  : null;
 
 	  String toName =
 		  tx.getToPocket()  != null ? tx.getToPocket().getPocketName()
-			  : tx.getToAccount() != null ? tx.getToAccount().getAccountNum()
+			  : tx.getToAccount() != null ? tx.getToAccount().getUser().getName()
 			  : null;
 
 	  return PocketTxDto.builder()
 		  .txId(tx.getId())
 		  .direction(dir)
 		  .amount(tx.getAmount())
-		  .createdAt(tx.getCreatedAt())
+		  .day(tx.getCreatedAt().toLocalDate().toString())
+		  .time(tx.getCreatedAt().toLocalTime().toString())
 		  .fromPocketId(tx.getFromPocket() != null ? tx.getFromPocket().getPocketId() : null)
 		  .toPocketId(tx.getToPocket() != null ? tx.getToPocket().getPocketId() : null)
 		  .fromAccountId(tx.getFromAccount() != null ? tx.getFromAccount().getAccountId() : null)
