@@ -8,6 +8,7 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,33 +27,27 @@ public class BoardController {
     private final BoardService boardService;
 
     //일자리 등록
+    @Operation(summary = "일자리 등록")
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<?>> createBoard(
-            @RequestPart("request") String requestJson,
-            @RequestPart("image") MultipartFile image) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        BoardCreateRequest  request;
-        try {
-            request = objectMapper.readValue(requestJson, BoardCreateRequest.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Invalid request format", e);
-        }
-
+    public ResponseEntity<ApiResponse<?>> createBoard(@ModelAttribute BoardCreateRequest request) {
         User user = SecurityUtil.getCurrentMember();
         String loginId = user.getLoginId();
-        request.setImage(image);
         BoardResponse response = boardService.createBoard(request, loginId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     //단건조회
+    @Operation(summary = "일자리 단건 조회")
     @GetMapping("/{boardId}")
     public ResponseEntity<ApiResponse<?>> getBoardById(@PathVariable Long boardId) {
-        BoardResponse response = boardService.getBoardById(boardId);
+        User user = SecurityUtil.getCurrentMember();
+        Long userId = user.getId();
+        BoardResponse response = boardService.getBoardById(boardId, userId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     //전체 조회
+    @Operation(summary = "일자리 전체 리스트 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<?>> getAllBoards() {
         List<BoardResponse> response = boardService.getAllBoards();
@@ -68,6 +63,7 @@ public class BoardController {
     }
 
     //내 글조회
+    @Operation(summary = "내가 작성한 일자리 리스트 조회")
     @GetMapping("/my")
     public ResponseEntity<ApiResponse<?>> getMyBoards() {
         User user = SecurityUtil.getCurrentMember();

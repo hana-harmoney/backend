@@ -16,6 +16,7 @@ import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
@@ -34,6 +36,7 @@ public class BoardServiceImpl implements BoardService {
     private final FileStorageService fileStorageService;
 
     @Override
+    @Transactional
     public BoardResponse createBoard(BoardCreateRequest request, String userEmail) {
         User user = userRepository.findByLoginId(userEmail)
                 .orElseThrow(() -> new CustomException(ErrorStatus.USER_NOT_FOUND));
@@ -42,7 +45,10 @@ public class BoardServiceImpl implements BoardService {
         Profile profile = profileRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.PROFILE_NOT_FOUND));
 
-        String imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+        String imageUrl = null;
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+        }
 
         Board board = Board.builder()
                 .title(request.getTitle())
@@ -51,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .address(request.getAddress())
-                .imageUrl(imageUrl)
+                .imageUrl(imageUrl) //null 허용
                 .user(user)
                 .category(category)
                 .status(false)
@@ -76,6 +82,7 @@ public class BoardServiceImpl implements BoardService {
                 .createdAt(saved.getCreatedAt())
                 .updatedAt(saved.getUpdatedAt())
                 .profileUrl(board.getUser().getProfile().getProfileImg())
+                .isMine(saved.getUser().getLoginId().equals(userEmail))
                 .build();
     }
 
@@ -93,14 +100,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public BoardResponse getBoardById(Long boardId) {
+    public BoardResponse getBoardById(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
-        return toResponse(board);
+        boolean isMine = board.getUser().getId().equals(userId);
+        return toResponse(board, isMine);
     }
 
-    private BoardResponse toResponse(Board board) {
+    private BoardResponse toResponse(Board board, boolean isMine) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
                 .nickname(board.getUser().getProfile().getNickname())
@@ -118,24 +125,23 @@ public class BoardServiceImpl implements BoardService {
                 .status(board.getStatus())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
+                .isMine(isMine)
                 .build();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<BoardResponse> getAllBoards() {
-        List<Board> boards = boardRepository.findAll();
+        List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(this::toResponse)
+                .map(board -> toResponse(board, false))
                 .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<BoardResponse> getBoardsByUserId(Long userId) {
-        List<Board> boards = boardRepository.findByUser_Id(userId);
+        List<Board> boards = boardRepository.findByUser_Id(userId, Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(this::toResponse)
+                .map(board -> toResponse(board, false))
                 .collect(Collectors.toList());
     }
 }

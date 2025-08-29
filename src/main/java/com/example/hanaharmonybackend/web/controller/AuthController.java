@@ -5,6 +5,7 @@ import com.example.hanaharmonybackend.payload.code.SuccessStatus;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,20 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "회원가입")
     @PostMapping(value = "/signup", consumes = "application/json", produces = "application/json")
     public ApiResponse<SignupResponse> signup(@RequestBody @Valid SignupRequest req) {
         return ApiResponse.success(authService.signup(req));
     }
+
+    @Operation(summary = "로그인")
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest req) {
         LoginResponse data = authService.login(req);
         return new ApiResponse<>(SuccessStatus.OK.getCode(), "로그인에 성공했습니다.", data);
     }
 
+    @Operation(summary = "회원 탈퇴")
     @PostMapping(value = "/withdraw", consumes = "application/json", produces = "application/json")
     public ApiResponse<String> withdraw(@RequestBody WithdrawRequest req) {
         var me = SecurityUtil.getCurrentMember();

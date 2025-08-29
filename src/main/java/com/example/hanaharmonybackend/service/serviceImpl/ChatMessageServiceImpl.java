@@ -7,10 +7,7 @@ import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageListResponse;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageRequest;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageResponse;
-import com.example.hanaharmonybackend.web.dto.chatMessage.ChatMessageTransferResponse;
+import com.example.hanaharmonybackend.web.dto.chatMessage.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
@@ -77,17 +75,23 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     // 채팅방 송금
     @Override
-    public ChatMessageTransferResponse chatTransferAccountToAccount(Long roomId) {
+    @Transactional
+    public ChatMessageTransferResponse chatTransferAccountToAccount(Long roomId, ChatMessageTransferRequest request) {
         User loginUser = SecurityUtil.getCurrentMember();
 
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+
+        Long amount = request.getAmount();
 
         if (!chatRoomService.isMember(roomId, loginUser.getLoginId())) {
             throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
         }
         if (room.getIsReceived()) {
             throw new CustomException(ErrorStatus.TRANSFER_ALREADY_COMPLETED);
+        }
+        if (amount == null || amount <= 0) {
+            throw new CustomException(ErrorStatus.INVALID_TRANSFER_AMOUNT);
         }
 
         // 송금은 항상 user1 -> user2
@@ -100,12 +104,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         Account from = accountRepository.findByUser_Id(fromUser.getId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
-
         Account to = accountRepository.findByUser_Id(toUser.getId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.ACCOUNT_NOT_FOUND));
-
         Board board = room.getBoard();
-        Long amount = board.getWage();
 
         // 송금하기
         from.withdraw(amount);

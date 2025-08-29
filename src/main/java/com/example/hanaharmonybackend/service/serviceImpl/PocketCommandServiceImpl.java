@@ -48,6 +48,7 @@ public class PocketCommandServiceImpl implements PocketCommandService {
   }
 
   @Override
+  @Transactional
   public void delete(Long pocketId, Long requesterId) {
 	Pocket pocket = pocketRepository.findById(pocketId)
 		.orElseThrow(()-> new CustomException(ErrorStatus.POCKET_NOT_FOUND));

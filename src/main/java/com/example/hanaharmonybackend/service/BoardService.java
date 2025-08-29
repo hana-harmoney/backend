@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BoardService {
     BoardResponse createBoard(BoardCreateRequest request, String userEmail);
-    BoardResponse getBoardById(Long boardId);
+    BoardResponse getBoardById(Long boardId, Long userId);
     List<BoardResponse> getAllBoards();
     void deleteBoard(Long boardId, Long userId);
     List<BoardResponse> getBoardsByUserId(Long userId);
