@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class BoardResponse {
     private Long boardId;
+    private Long userId;
     private String nickname;
     private String phone;
     private Double trust;

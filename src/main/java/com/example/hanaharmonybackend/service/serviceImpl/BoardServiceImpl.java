@@ -67,6 +67,7 @@ public class BoardServiceImpl implements BoardService {
 
         return BoardResponse.builder()
                 .boardId(saved.getBoardId())
+                .userId(board.getUser().getId())
                 .nickname(profile.getNickname())
                 .phone(board.getUser().getPhone())
                 .trust(profile.getTrust())
@@ -110,6 +111,7 @@ public class BoardServiceImpl implements BoardService {
     private BoardResponse toResponse(Board board, boolean isMine) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
+                .userId(board.getUser().getId())
                 .nickname(board.getUser().getProfile().getNickname())
                 .phone(board.getUser().getPhone())
                 .profileUrl(board.getUser().getProfile().getProfileImg())
