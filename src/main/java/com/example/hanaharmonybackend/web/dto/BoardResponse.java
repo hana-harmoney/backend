@@ -24,6 +24,8 @@ public class BoardResponse {
     private boolean status;
     private String profileUrl;
     private boolean isMine;
+    private Long chatRoomCnt;
+    private Long chatRoomId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -45,8 +45,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         User loginUser = SecurityUtil.getCurrentMember();
         Long loginUserId = loginUser.getId();
 
-        List<ChatRoomInfoResponse> chatRoomList = chatRoomRepository.findByUserId(loginUserId)
-                .stream()
+        List<ChatRoom> rooms = chatRoomRepository.findByUserId(loginUserId);
+
+        List<ChatRoomInfoResponse> chatRoomList = mapChatRooms(rooms, loginUserId);
+
+        return ChatRoomListResponse.builder()
+                .chatRoomList(chatRoomList)
+                .build();
+    }
+
+    // 공통 매핑 메서드
+    public List<ChatRoomInfoResponse> mapChatRooms(List<ChatRoom> rooms, Long loginUserId) {
+        return rooms.stream()
                 .map(chatRoom -> {
                     User otherUser = chatRoom.getUser1().getId().equals(loginUserId)
                             ? chatRoom.getUser2()
@@ -64,11 +74,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .lastMessage(lastMessage != null ? lastMessage.getMessage() : "메세지가 없습니다.")
                             .build();
                 })
+                .sorted((r1, r2) -> {
+                    if (r1.getLastMessageTime() == null && r2.getLastMessageTime() == null) return 0;
+                    if (r1.getLastMessageTime() == null) return 1; // null은 뒤로
+                    if (r2.getLastMessageTime() == null) return -1;
+                    return r2.getLastMessageTime().compareTo(r1.getLastMessageTime());
+                })
                 .collect(Collectors.toList());
-
-        return ChatRoomListResponse.builder()
-                .chatRoomList(chatRoomList)
-                .build();
     }
 
     // 채팅방 단건 조회
