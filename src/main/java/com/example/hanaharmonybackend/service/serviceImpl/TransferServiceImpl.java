@@ -65,6 +65,11 @@ public class TransferServiceImpl implements TransferService {
         Pocket to = pocketRepository.findById(pocketId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.POCKET_NOT_FOUND));
 
+        // 주머니 소유자 검증
+        if (!to.getAccount().getAccountId().equals(from.getAccountId())) {
+            throw new CustomException(ErrorStatus.POCKET_ACCESS_DENIED);
+        }
+
         from.withdraw(request.getAmount());
         to.deposit(request.getAmount());
 
@@ -89,6 +94,11 @@ public class TransferServiceImpl implements TransferService {
 
         Pocket from = pocketRepository.findById(pocketId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.POCKET_NOT_FOUND));
+
+        // 주머니 소유자 검증
+        if (!from.getAccount().getAccountId().equals(to.getAccountId())) {
+            throw new CustomException(ErrorStatus.POCKET_ACCESS_DENIED);
+        }
 
         from.withdraw(request.getAmount());
         to.deposit(request.getAmount());
