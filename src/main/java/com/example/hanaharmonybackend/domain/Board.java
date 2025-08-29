@@ -69,4 +69,16 @@ public class Board {
     public void updateStatus(Boolean status) {
         this.status = status;
     }
+
+    public void updateBoard(String title, String content, Long wage, String address,
+                            Double latitude, Double longitude, String imageUrl, Category category) {
+        this.title = title;
+        this.content = content;
+        this.wage = wage;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.imageUrl = imageUrl;
+        this.category = category;
+    }
 }

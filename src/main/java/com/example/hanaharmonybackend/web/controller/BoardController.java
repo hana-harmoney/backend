@@ -32,6 +32,18 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @Operation(summary = "일자리 글 수정")
+    @PatchMapping(value = "/{boardId}", consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<?>> updateBoard(
+            @PathVariable Long boardId,
+            @ModelAttribute BoardCreateRequest request
+    ) {
+        User user = SecurityUtil.getCurrentMember();
+        Long userId = user.getId();
+        BoardResponse response = boardService.updateBoard(boardId, userId, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     //단건조회
     @Operation(summary = "일자리 단건 조회")
     @GetMapping("/{boardId}")
@@ -75,4 +87,6 @@ public class BoardController {
     public ApiResponse<ChatRoomListResponse> getBoardChatRooms(@PathVariable Long boardId) {
         return ApiResponse.success(boardService.getBoardChatRooms(boardId));
     }
+
+
 }

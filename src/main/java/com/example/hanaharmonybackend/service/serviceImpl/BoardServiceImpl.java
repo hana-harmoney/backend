@@ -88,6 +88,38 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
+    public BoardResponse updateBoard(Long boardId, Long userId, BoardCreateRequest request) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
+
+        if (!board.getUser().getId().equals(userId)) {
+            throw new CustomException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CustomException(ErrorStatus.CATEGORY_NOT_FOUND));
+
+        String imageUrl = board.getImageUrl(); // 기존 이미지 유지
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
+        }
+
+        board.updateBoard(
+                request.getTitle(),
+                request.getContent(),
+                request.getWage(),
+                request.getAddress(),
+                request.getLatitude(),
+                request.getLongitude(),
+                imageUrl,
+                category
+        );
+
+        return toResponse(board, true, null, null);
+    }
+
+    @Override
+    @Transactional
     public void deleteBoard(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
