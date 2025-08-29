@@ -2,6 +2,7 @@ package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface BoardService {
     List<BoardResponse> getBoardsByUserId(Long userId);
     ChatRoomListResponse getBoardChatRooms(Long boardId);
 
-    BoardResponse updateBoard(Long boardId, Long userId, BoardCreateRequest request);
+    BoardResponse updateBoard(Long boardId, Long userId, BoardUpdateRequest request);
 }

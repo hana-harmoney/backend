@@ -10,6 +10,7 @@ import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomInfoResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +89,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponse updateBoard(Long boardId, Long userId, BoardCreateRequest request) {
+    public BoardResponse updateBoard(Long boardId, Long userId, BoardUpdateRequest request) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
 
@@ -99,8 +100,17 @@ public class BoardServiceImpl implements BoardService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorStatus.CATEGORY_NOT_FOUND));
 
-        String imageUrl = board.getImageUrl(); // 기존 이미지 유지
-        if (request.getImage() != null && !request.getImage().isEmpty()) {
+        String imageUrl = board.getImageUrl();
+
+        if (request.isDeleteImage()) {
+            if (imageUrl != null) {
+                fileStorageService.delete(imageUrl);
+            }
+            imageUrl = null;
+        } else if (request.getImage() != null && !request.getImage().isEmpty()) {
+            if (imageUrl != null) {
+                fileStorageService.delete(imageUrl);
+            }
             imageUrl = fileStorageService.upload(request.getImage(), "upload/board");
         }
 
