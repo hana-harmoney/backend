@@ -45,8 +45,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         User loginUser = SecurityUtil.getCurrentMember();
         Long loginUserId = loginUser.getId();
 
-        List<ChatRoomInfoResponse> chatRoomList = chatRoomRepository.findByUserId(loginUserId)
-                .stream()
+        List<ChatRoom> rooms = chatRoomRepository.findByUserId(loginUserId);
+
+        List<ChatRoomInfoResponse> chatRoomList = mapChatRooms(rooms, loginUserId);
+
+        return ChatRoomListResponse.builder()
+                .chatRoomList(chatRoomList)
+                .build();
+    }
+
+    // 공통 매핑 메서드
+    public List<ChatRoomInfoResponse> mapChatRooms(List<ChatRoom> rooms, Long loginUserId) {
+        return rooms.stream()
                 .map(chatRoom -> {
                     User otherUser = chatRoom.getUser1().getId().equals(loginUserId)
                             ? chatRoom.getUser2()
@@ -65,10 +75,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .build();
                 })
                 .collect(Collectors.toList());
-
-        return ChatRoomListResponse.builder()
-                .chatRoomList(chatRoomList)
-                .build();
     }
 
     // 채팅방 단건 조회

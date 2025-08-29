@@ -1,7 +1,5 @@
 package com.example.hanaharmonybackend.web.controller;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
+import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.ApiResponse;
@@ -9,7 +7,6 @@ import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +14,6 @@ import com.example.hanaharmonybackend.util.SecurityUtil;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/board")
@@ -55,6 +51,7 @@ public class BoardController {
     }
 
     //일자리 삭제
+    @Operation(summary = "일자리 삭제")
     @DeleteMapping("/{boardId}")
     public ApiResponse<?> deleteBoard(@PathVariable Long boardId){
         User user=SecurityUtil.getCurrentMember();
@@ -71,5 +68,11 @@ public class BoardController {
         Map<String, Object> result = new java.util.HashMap<>();
         result.put("boardList", boardList);
         return ResponseEntity.ok().body(ApiResponse.success(result));
+    }
+
+    @Operation(summary = "개설된 채팅방 리스트 조회")
+    @GetMapping("/{boardId}/chatRoom")
+    public ApiResponse<ChatRoomListResponse> getBoardChatRooms(@PathVariable Long boardId) {
+        return ApiResponse.success(boardService.getBoardChatRooms(boardId));
     }
 }

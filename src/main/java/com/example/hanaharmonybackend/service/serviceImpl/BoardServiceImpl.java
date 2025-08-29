@@ -1,17 +1,17 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
 
-import com.example.hanaharmonybackend.domain.Board;
-import com.example.hanaharmonybackend.domain.Category;
-import com.example.hanaharmonybackend.domain.Profile;
-import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.domain.*;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.service.FileStorageService;
+import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomInfoResponse;
+import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,7 @@ public class BoardServiceImpl implements BoardService {
     private final ProfileRepository profileRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final FileStorageService fileStorageService;
+    private final ChatRoomServiceImpl chatRoomServiceImpl;
 
     @Override
     @Transactional
@@ -155,5 +156,25 @@ public class BoardServiceImpl implements BoardService {
         return boards.stream()
                 .map(board -> toResponse(board, false, null, null))
                 .collect(Collectors.toList());
+    }
+
+    // 일자리에 개설된 채팅방리스트
+    @Override
+    public ChatRoomListResponse getBoardChatRooms(Long boardId) {
+        User user = SecurityUtil.getCurrentMember();
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
+
+        if (!user.getId().equals(board.getUser().getId())) {
+            throw new CustomException(ErrorStatus.BOARD_NOT_WRITER);
+        }
+
+        List<ChatRoom> rooms = chatRoomRepository.findByBoard_BoardId(boardId);
+
+        List<ChatRoomInfoResponse> chatRoomList = chatRoomServiceImpl.mapChatRooms(rooms, user.getId());
+
+        return ChatRoomListResponse.builder()
+                .chatRoomList(chatRoomList)
+                .build();
     }
 }
