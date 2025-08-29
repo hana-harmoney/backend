@@ -74,6 +74,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .lastMessage(lastMessage != null ? lastMessage.getMessage() : "메세지가 없습니다.")
                             .build();
                 })
+                .sorted((r1, r2) -> {
+                    if (r1.getLastMessageTime() == null && r2.getLastMessageTime() == null) return 0;
+                    if (r1.getLastMessageTime() == null) return 1; // null은 뒤로
+                    if (r2.getLastMessageTime() == null) return -1;
+                    return r2.getLastMessageTime().compareTo(r1.getLastMessageTime());
+                })
                 .collect(Collectors.toList());
     }
 
