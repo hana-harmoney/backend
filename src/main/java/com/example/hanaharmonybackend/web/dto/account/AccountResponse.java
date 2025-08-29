@@ -10,6 +10,7 @@ import java.util.List;
 public class AccountResponse {
     private final Long totalAssets;
     private final String account;
+    private final Long accountId;
     private final Long accountBalance;
     private final List<PocketDto> pocketLists;
 
