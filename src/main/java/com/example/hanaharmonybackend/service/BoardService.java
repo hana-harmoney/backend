@@ -14,4 +14,6 @@ public interface BoardService {
     void deleteBoard(Long boardId, Long userId);
     List<BoardResponse> getBoardsByUserId(Long userId);
     ChatRoomListResponse getBoardChatRooms(Long boardId);
+
+    BoardResponse updateBoard(Long boardId, Long userId, BoardCreateRequest request);
 }

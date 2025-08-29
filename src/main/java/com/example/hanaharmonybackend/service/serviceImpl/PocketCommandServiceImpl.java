@@ -7,7 +7,6 @@ import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.AccountRepository;
 import com.example.hanaharmonybackend.repository.PocketRepository;
 import com.example.hanaharmonybackend.service.PocketCommandService;
-import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketCreateRequest;
 import com.example.hanaharmonybackend.web.dto.pocket.PocketCreateResponse;
 import jakarta.transaction.Transactional;
