@@ -119,6 +119,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         Profile reportedProfile = reportedUser.getProfile();
         reportedProfile.increaseReportCount();
+        reportedProfile.updateTrust(-1.0);
         profileRepository.save(reportedProfile);
 
         return ChatRoomReportResponse.builder()
