@@ -39,8 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
     return AccountResponse.builder()
         .totalAssets(totalAssets)
-        .accountBalance(account.getAccountBalance())
         .account(account.getAccountNum())
+        .accountId(account.getAccountId())
+        .accountBalance(account.getAccountBalance())
         .pocketLists(account.getPockets().stream()
             .map(p->AccountResponse.PocketDto.builder()
                     .pocketId(p.getPocketId())
@@ -117,7 +118,8 @@ public class AccountServiceImpl implements AccountService {
           .toPocketId(toPocketId)
           .toPocketName(toPocketName)
           .amount(tx.getAmount())
-          .createdAt(tx.getCreatedAt())
+          .day(tx.getCreatedAt().toLocalDate().toString())
+          .time(tx.getCreatedAt().toLocalTime().toString())
           .build();
     }).toList();
 

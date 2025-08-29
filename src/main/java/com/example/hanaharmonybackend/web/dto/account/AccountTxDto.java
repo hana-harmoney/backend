@@ -4,7 +4,9 @@ import com.example.hanaharmonybackend.web.dto.TransactionType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Builder
@@ -24,5 +26,6 @@ public class AccountTxDto {
   private String toPocketName;
 
   private Long amount;
-  private LocalDateTime createdAt;
+  private String day;
+  private String time;
 }
