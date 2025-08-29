@@ -7,10 +7,7 @@ import com.example.hanaharmonybackend.domain.Profile;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
-import com.example.hanaharmonybackend.repository.BoardRepository;
-import com.example.hanaharmonybackend.repository.CategoryRepository;
-import com.example.hanaharmonybackend.repository.ProfileRepository;
-import com.example.hanaharmonybackend.repository.UserRepository;
+import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
@@ -33,6 +30,7 @@ public class BoardServiceImpl implements BoardService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final FileStorageService fileStorageService;
 
     @Override
@@ -104,11 +102,21 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponse getBoardById(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.BOARD_NOT_FOUND));
+
         boolean isMine = board.getUser().getId().equals(userId);
-        return toResponse(board, isMine);
+        Long chatRoomCnt = 0L;
+        Long chatRoomId = null;
+
+        if (isMine) {
+            chatRoomCnt = chatRoomRepository.countByBoard_BoardId(boardId);
+        } else {
+            chatRoomId = chatRoomRepository.findIdByBoardIdAndUser2Id(boardId, userId)
+                    .orElse(null);
+        }
+        return toResponse(board, isMine, chatRoomCnt, chatRoomId);
     }
 
-    private BoardResponse toResponse(Board board, boolean isMine) {
+    private BoardResponse toResponse(Board board, boolean isMine, Long chatRoomCnt, Long chatRoomId) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
                 .userId(board.getUser().getId())
@@ -125,6 +133,8 @@ public class BoardServiceImpl implements BoardService {
                 .imageUrl(board.getImageUrl())
                 .category(board.getCategory().getName())
                 .status(board.getStatus())
+                .chatRoomCnt(chatRoomCnt)
+                .chatRoomId(chatRoomId)
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .isMine(isMine)
@@ -135,7 +145,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponse> getAllBoards() {
         List<Board> boards = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(board -> toResponse(board, false))
+                .map(board -> toResponse(board, false, null, null))
                 .collect(Collectors.toList());
     }
 
@@ -143,7 +153,7 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardResponse> getBoardsByUserId(Long userId) {
         List<Board> boards = boardRepository.findByUser_Id(userId, Sort.by(Sort.Direction.DESC, "createdAt"));
         return boards.stream()
-                .map(board -> toResponse(board, false))
+                .map(board -> toResponse(board, false, null, null))
                 .collect(Collectors.toList());
     }
 }
