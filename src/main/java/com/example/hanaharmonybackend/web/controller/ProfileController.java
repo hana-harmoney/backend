@@ -54,6 +54,10 @@ public class ProfileController {
         User me = SecurityUtil.getCurrentMember();
         return ApiResponse.success(profileService.getMyProfile(me.getId()));
     }
+    @GetMapping(value = "/{userId}", produces = "application/json")
+    public ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable Long userId) {
+        return ApiResponse.success(profileService.getByUserId(userId));
+    }
 
     /** 프로필 부분 수정 (PATCH /profile) */
     @Operation(summary = "프로필 수정")

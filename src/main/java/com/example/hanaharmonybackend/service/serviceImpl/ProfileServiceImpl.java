@@ -252,5 +252,19 @@ public class ProfileServiceImpl implements ProfileService {
         // flush는 트랜잭션 종료 시점
         return toResponse(p);
     }
+    @Override
+    @Transactional(readOnly = true)
+    public ProfileResponse getByUserId(Long userId) {
+        var p = profileRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+
+        // 탈퇴 계정이면 차단 (getIsDeleted는 User에 추가해둔 메서드)
+        if (p.getUser() != null && p.getUser().getIsDeleted()) {
+            throw new IllegalArgumentException("탈퇴한 사용자입니다.");
+        }
+
+        return toResponse(p);
+    }
+
 
 }
