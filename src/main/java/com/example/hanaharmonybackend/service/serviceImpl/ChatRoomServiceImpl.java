@@ -8,6 +8,7 @@ import com.example.hanaharmonybackend.repository.ChatMessageRepository;
 import com.example.hanaharmonybackend.repository.ChatRoomRepository;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.util.BannedWordFilter;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 import lombok.RequiredArgsConstructor;
@@ -71,14 +72,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .nickname(otherUser.getProfile().getNickname())
                             .profileImageUrl(otherUser.getProfile().getProfileImg())
                             .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
-                            .lastMessage(lastMessage != null ? lastMessage.getMessage() : "메세지가 없습니다.")
+                            .lastMessage(lastMessage != null
+                                    ? BannedWordFilter.maskBannedWords(lastMessage.getMessage())
+                                    : "메세지가 없습니다.")
                             .build();
                 })
                 .sorted((r1, r2) -> {
-                    if (r1.getLastMessageTime() == null && r2.getLastMessageTime() == null) return 0;
-                    if (r1.getLastMessageTime() == null) return 1; // null은 뒤로
-                    if (r2.getLastMessageTime() == null) return -1;
-                    return r2.getLastMessageTime().compareTo(r1.getLastMessageTime());
+                    // 1. 메시지가 null이면 무조건 위로, 둘 다 null이면 채팅방 생성순으로 비교
+                    if (r1.getLastMessageTime() == null && r2.getLastMessageTime() == null) {
+                        return r1.getRoomId().compareTo(r2.getRoomId());
+                    }
+                    if (r1.getLastMessageTime() == null) return -1;
+                    if (r2.getLastMessageTime() == null) return 1;
+
+                    // 2. 둘 다 메시지가 있으면 최신순 정렬
+                    int cmp = r2.getLastMessageTime().compareTo(r1.getLastMessageTime());
+                    if (cmp != 0) return cmp;
+
+                    return r1.getRoomId().compareTo(r2.getRoomId());
                 })
                 .collect(Collectors.toList());
     }
