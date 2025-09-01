@@ -44,6 +44,12 @@ public class User extends BaseEntity {
     @Column(name = "address", nullable = false, length = 100)
     private String address;
 
+    @Column(nullable = false)
+    private Double latitude;
+
+    @Column(nullable = false)
+    private Double longitude;
+
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 

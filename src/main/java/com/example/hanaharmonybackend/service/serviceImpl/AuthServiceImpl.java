@@ -92,6 +92,8 @@ public class AuthServiceImpl implements AuthService {
                 .gender(req.gender())
                 .phone(req.phone())
                 .address(req.address())
+                .latitude(req.latitude())
+                .longitude(req.longitude())
                 .deleted(false)
                 .build();
 

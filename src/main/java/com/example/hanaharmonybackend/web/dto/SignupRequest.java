@@ -39,5 +39,13 @@ public record SignupRequest(
         // 주소
         @NotBlank(message = "주소는 필수입니다.")
         @Size(max = 100, message = "주소는 100자 이내여야 합니다.")
-        String address
+        String address,
+
+        // 위도 (카카오맵 y)
+        @NotNull(message = "위도는 필수입니다.")
+        Double latitude,
+
+        // 경도 (카카오맵 x)
+        @NotNull(message = "경도는 필수입니다.")
+        Double longitude
 ) {}
