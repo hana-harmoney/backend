@@ -110,9 +110,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean checkLoginId(String loginId) {
-        if (userRepository.existsByLoginId(loginId)) {
-            throw new CustomException(ErrorStatus.DUPLICATE_LOGIN_ID);
-        }
-        return false; // 중복이 아니면 false 반환 → 사용 가능
+        return userRepository.existsByLoginId(loginId); // 중복이면 true
     }
 }
