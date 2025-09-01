@@ -63,6 +63,18 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success(java.util.Map.of("boardList", response)));
     }
 
+    @Operation(summary = "사용자 주변(기본 15km) 게시글 리스트 조회")
+    @GetMapping("/nearby")
+    public ResponseEntity<ApiResponse<?>> getNearbyBoards(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) Double radiusKm
+    ) {
+        double radius = (radiusKm == null ? 15.0 : radiusKm);
+        var result = boardService.getNearbyBoards(radius, page, size);
+        return ResponseEntity.ok(ApiResponse.success(java.util.Map.of("boardList", result)));
+    }
+
     //일자리 삭제
     @Operation(summary = "일자리 삭제")
     @DeleteMapping("/{boardId}")

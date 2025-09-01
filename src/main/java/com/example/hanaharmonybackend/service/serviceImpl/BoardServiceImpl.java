@@ -9,16 +9,23 @@ import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
+import com.example.hanaharmonybackend.web.dto.BoardNearbyDto;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomInfoResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -219,4 +226,74 @@ public class BoardServiceImpl implements BoardService {
                 .chatRoomList(chatRoomList)
                 .build();
     }
+
+
+    // 사용자 위치 기준 반경 내 게시글 조회 (distanceKm 포함)
+    @Transactional(readOnly = true)
+    public Page<BoardNearbyDto> getNearbyBoards(double radiusKm, int page, int size) {
+        User me = SecurityUtil.getCurrentMember();
+        if (me.getLatitude() == null || me.getLongitude() == null) {
+            throw new CustomException(ErrorStatus.USER_LOCATION_REQUIRED); // USER_LOCATION_REQUIRED 등에 맞춰 처리
+        }
+
+        // 1) 반경 내 게시글 id + 거리(km)만 우선 조회 (정렬: 거리 오름차순)
+        Page<Object[]> idPage = boardRepository.findNearbyIdsWithDistance(
+                me.getLatitude(), me.getLongitude(), radiusKm, PageRequest.of(page, size)
+        );
+
+        // 2) id → distance 매핑 및 id 순서 보존용 리스트
+        var ids = idPage.map(r -> ((Number) r[0]).longValue()).getContent();
+        Map<Long, Double> distanceMap = new HashMap<>();
+        idPage.getContent().forEach(r -> distanceMap.put(((Number) r[0]).longValue(), ((Number) r[1]).doubleValue()));
+
+        // 3) 배치로 엔티티 조회 후, idPage 순서대로 DTO 조립
+        var boardsById = boardRepository.findAllById(ids)
+                .stream().collect(java.util.stream.Collectors.toMap(Board::getBoardId, b -> b));
+
+        var dtoList = new ArrayList<BoardNearbyDto>(ids.size());
+        for (Long boardId : ids) {
+            Board b = boardsById.get(boardId);
+            if (b == null) continue;
+
+            boolean isMine = b.getUser().getId().equals(me.getId());
+            Long chatRoomCnt = null;
+            Long chatRoomId = null;
+            if (isMine) {
+                chatRoomCnt = chatRoomRepository.countByBoard_BoardId(boardId);
+            } else {
+                chatRoomId = chatRoomRepository.findIdByBoardIdAndUser2Id(boardId, me.getId()).orElse(null);
+            }
+
+            Profile profile = b.getUser().getProfile();
+
+            BoardNearbyDto dto = BoardNearbyDto.builder()
+                    .boardId(b.getBoardId())
+                    .userId(b.getUser().getId())
+                    .nickname(profile.getNickname())
+                    .phone(b.getUser().getPhone())
+                    .trust(profile.getTrust())
+                    .title(b.getTitle())
+                    .content(b.getContent())
+                    .wage(b.getWage())
+                    .address(b.getAddress())
+                    .latitude(b.getLatitude())
+                    .longitude(b.getLongitude())
+                    .imageUrl(b.getImageUrl())
+                    .category(b.getCategory().getName())
+                    .status(b.getStatus())
+                    .profileUrl(profile.getProfileImg())
+                    .isMine(isMine)
+                    .chatRoomCnt(chatRoomCnt)
+                    .chatRoomId(chatRoomId)
+                    .createdAt(b.getCreatedAt())
+                    .updatedAt(b.getUpdatedAt())
+                    .distance(distanceMap.getOrDefault(boardId, 0.0))
+                    .build();
+
+            dtoList.add(dto);
+        }
+
+        return new PageImpl<>(dtoList, PageRequest.of(page, size), idPage.getTotalElements());
+    }
+
 }
