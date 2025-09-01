@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @Operation(summary = "아이디 중복 체크")
-    @GetMapping(value = "/check-id", produces = "application/json")
+    @GetMapping("/check-id")
     public ApiResponse<CheckIdResponse> checkLoginId(@RequestParam String loginId) {
         boolean exists = authService.checkLoginId(loginId);
         return ApiResponse.success(new CheckIdResponse(exists));
