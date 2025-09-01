@@ -9,4 +9,5 @@ public interface AuthService {
     SignupResponse signup(SignupRequest req);
     LoginResponse login(LoginRequest req);
     void withdraw(Long userId, String currentPassword);
+    boolean checkLoginId(String loginId);
 }
