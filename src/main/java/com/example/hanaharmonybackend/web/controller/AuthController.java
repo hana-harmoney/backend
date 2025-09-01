@@ -24,6 +24,13 @@ public class AuthController {
         return ApiResponse.success(authService.signup(req));
     }
 
+    @Operation(summary = "아이디 중복 체크")
+    @GetMapping(value = "/check-id", produces = "application/json")
+    public ApiResponse<CheckIdResponse> checkLoginId(@RequestParam String loginId) {
+        boolean exists = authService.checkLoginId(loginId);
+        return ApiResponse.success(new CheckIdResponse(exists));
+    }
+
     @Operation(summary = "로그인")
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest req) {

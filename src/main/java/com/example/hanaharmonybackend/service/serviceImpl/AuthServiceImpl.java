@@ -99,9 +99,20 @@ public class AuthServiceImpl implements AuthService {
 
         // 2) 계좌 생성
         Account account = accountCommandService.createFor(user);
+
+        // 초기 입금: 4000만원
+        account.deposit(40_000_000L);
+
         user.setAccount(account);
 
         return new SignupResponse(saved.getId(), saved.getLoginId(), saved.getName());
     }
 
+    @Override
+    public boolean checkLoginId(String loginId) {
+        if (userRepository.existsByLoginId(loginId)) {
+            throw new CustomException(ErrorStatus.DUPLICATE_LOGIN_ID);
+        }
+        return false; // 중복이 아니면 false 반환 → 사용 가능
+    }
 }
