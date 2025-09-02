@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -93,5 +95,30 @@ public class JwtTokenProvider {
             log.warn("JWT claims string is empty.", e);
         }
         return false;
+    }
+
+    // Delegate 토큰 발급
+    public String issueDelegateJwt(String subject, Map<String, Object> extraClaims, long expireSeconds) {
+        long now = System.currentTimeMillis();
+        Date expiry = new Date(now + expireSeconds * 1000);
+
+        JwtBuilder builder = Jwts.builder()
+                .setSubject(subject)
+                .claim("typ", "delegate") // delegate 타입 명시
+                .setIssuedAt(new Date(now))
+                .setExpiration(expiry)
+                .signWith(key);
+
+        if (extraClaims != null) {
+            extraClaims.forEach(builder::claim);
+        }
+
+        return builder.compact();
+    }
+
+    // Claims 전체 조회 (delegate scope 확인용)
+    public Map<String, Object> parseAllClaims(String token) {
+        Claims claims = parseClaims(token);
+        return new HashMap<>(claims);
     }
 }

@@ -26,8 +26,23 @@ public class ProfileController {
     /** (기존) JSON으로 URL 받아 저장 */
     @Operation(summary = "프로필 생성")
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ApiResponse<ProfileResponse> create(@RequestBody @Valid ProfileCreateRequest req) {
+    public ApiResponse<ProfileResponse> create(@RequestBody @Valid ProfileCreateRequest req,
+                                               @RequestAttribute(value = "delegate", required = false) Boolean isDelegate,
+                                               @RequestAttribute(value = "scope", required = false) String scope,
+                                               @RequestAttribute(value = "userIdScope", required = false) Long userIdScope) {
+        // delegate 토큰일 경우
+        if (Boolean.TRUE.equals(isDelegate) && "PROFILE_CREATE".equals(scope)) {
+            if (profileService.existsByUserId(userIdScope)) {
+                return ApiResponse.error("E_ALREADY_HAS_PROFILE","이미 프로필이 존재합니다.", null);
+            }
+            return ApiResponse.success(profileService.create(userIdScope, req));
+        }
+
+        // 일반 사용자일 경우
         User me = SecurityUtil.getCurrentMember();
+        if (profileService.existsByUserId(me.getId())) {
+            return ApiResponse.error("E_ALREADY_HAS_PROFILE","이미 프로필이 존재합니다.", null);
+        }
         return ApiResponse.success(profileService.create(me.getId(), req));
     }
 
@@ -39,9 +54,26 @@ public class ProfileController {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "category_ids", required = false) List<Long> categoryIds,
             @RequestPart(value = "profile_img", required = false) MultipartFile profileImg,
-            @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImages
+            @RequestPart(value = "desc_images", required = false) List<MultipartFile> descImages,
+            @RequestAttribute(value = "delegate", required = false) Boolean isDelegate,
+            @RequestAttribute(value = "scope", required = false) String scope,
+            @RequestAttribute(value = "userIdScope", required = false) Long userIdScope
     ) {
+        // delegate 토큰일 경우
+        if (Boolean.TRUE.equals(isDelegate) && "PROFILE_CREATE".equals(scope)) {
+            if (profileService.existsByUserId(userIdScope)) {
+                return ApiResponse.error("E_ALREADY_HAS_PROFILE","이미 프로필이 존재합니다.", null);
+            }
+            return ApiResponse.success(
+                    profileService.createWithFiles(userIdScope, nickname, description, categoryIds, profileImg, descImages)
+            );
+        }
+
+        // 일반 사용자일 경우
         User me = SecurityUtil.getCurrentMember();
+        if (profileService.existsByUserId(me.getId())) {
+            return ApiResponse.error("E_ALREADY_HAS_PROFILE","이미 프로필이 존재합니다.", null);
+        }
         return ApiResponse.success(
                 profileService.createWithFiles(me.getId(), nickname, description, categoryIds, profileImg, descImages)
         );
