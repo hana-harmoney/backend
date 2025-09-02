@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -148,6 +149,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         );
 
         ChatMessage savedMessage = chatMessageRepository.save(transferMessage);
+
+        log.info("송금 메세지 알림");
+        // 알림 설정 및 메세지 생성
+        FcmMessageRequest fcmRequest = new FcmMessageRequest();
+        fcmRequest.setUserId(toUser.getId());
+        fcmRequest.setTitle("송금 봉투가 도착했습니다.");
+        fcmRequest.setBody("[" + fromUser.getProfile().getNickname() + "] 님이 " + amount + "원을 송금하셨습니다.");
+        fcmRequest.setImage(fromUser.getProfile().getProfileImg());
+        log.info(fcmRequest.getUserId() + ": " + fcmRequest.getBody());
+        fcmService.sendMessage(fcmRequest);
 
         return ChatMessageTransferResponse.builder()
                 .change(from.getAccountBalance())   // 잔액
