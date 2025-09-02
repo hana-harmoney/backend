@@ -53,6 +53,9 @@ public class User extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 
+    @Column(nullable = true)
+    private String fcmToken;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Account account;
 
@@ -68,5 +71,9 @@ public class User extends BaseEntity {
 
     public void setIsDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
