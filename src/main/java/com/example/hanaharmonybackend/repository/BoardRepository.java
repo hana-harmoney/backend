@@ -25,6 +25,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     FROM board b
     WHERE b.latitude IS NOT NULL
       AND b.longitude IS NOT NULL
+      and b.status=0
     HAVING distance_km <= :radiusKm
     ORDER BY distance_km ASC
     """,
