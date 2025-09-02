@@ -26,6 +26,10 @@ public class Pocket extends BaseEntity {
   @Column(name = "current_amount", nullable = false)
   private Long currentAmount;
 
+  @Column(name = "is_deleted", nullable = false)
+  @Setter
+  private boolean deleted = false;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "account_id", nullable = false)
   private Account account;

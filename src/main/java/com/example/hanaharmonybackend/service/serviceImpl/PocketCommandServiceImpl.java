@@ -56,6 +56,6 @@ public class PocketCommandServiceImpl implements PocketCommandService {
 	  throw new CustomException(ErrorStatus.ACCOUNT_ACCESS_DENIED);
 	}
 
-	pocketRepository.delete(pocket);
+	pocket.setDeleted(true);
   }
 }
