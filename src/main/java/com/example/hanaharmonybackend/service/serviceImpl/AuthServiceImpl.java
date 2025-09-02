@@ -10,6 +10,7 @@ import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.AccountCommandService;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
+import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -113,5 +114,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean checkLoginId(String loginId) {
         return userRepository.existsByLoginId(loginId); // 중복이면 true
+    }
+
+    @Override
+    public String findFirebaseTokenByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getFcmToken)
+                .orElse(null);
     }
 }

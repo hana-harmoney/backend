@@ -70,3 +70,7 @@ aws:
   s3:
     bucket: ${AWS_BUCKET}
     region: ap-northeast-2
+
+fcm:
+  service-account-path: ${FCM_ACCOUNT_PATH}
+  project-id: ${FCM_PROJECT_ID}

@@ -10,4 +10,5 @@ public interface AuthService {
     LoginResponse login(LoginRequest req);
     void withdraw(Long userId, String currentPassword);
     boolean checkLoginId(String loginId);
+    String findFirebaseTokenByUserId(Long userId);
 }
