@@ -28,6 +28,7 @@ public enum ErrorStatus implements BaseStatus {
     CATEGORY_NOT_FOUND("C001", "카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     PROFILE_NOT_FOUND("U002", "프로필이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     BOARD_NOT_WRITER("B002", "게시글 작성자가 아닙니다.", HttpStatus.UNAUTHORIZED),
+    USER_LOCATION_REQUIRED("E011","사용자의 위치 정보가 필요합니다.", HttpStatus.BAD_REQUEST),
 
     //Pocket error
     POCKET_NOT_FOUND("P001", "주머니가 존재하지 않습니다.", HttpStatus.NOT_FOUND),

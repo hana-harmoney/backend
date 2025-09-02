@@ -1,9 +1,11 @@
 package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
+import com.example.hanaharmonybackend.web.dto.BoardNearbyDto;
 import com.example.hanaharmonybackend.web.dto.BoardResponse;
 import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,4 +19,7 @@ public interface BoardService {
     ChatRoomListResponse getBoardChatRooms(Long boardId);
 
     BoardResponse updateBoard(Long boardId, Long userId, BoardUpdateRequest request);
+
+    List<BoardNearbyDto> getNearbyBoards(double radiusKm);
+
 }
