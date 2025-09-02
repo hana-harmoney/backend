@@ -101,9 +101,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         if (!chatRoomService.isMember(roomId, loginUser.getLoginId())) {
             throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
         }
-        if (room.getIsReceived()) {
-            throw new CustomException(ErrorStatus.TRANSFER_ALREADY_COMPLETED);
-        }
+
         if (amount == null || amount <= 0) {
             throw new CustomException(ErrorStatus.INVALID_TRANSFER_AMOUNT);
         }
@@ -150,14 +148,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         ChatMessage savedMessage = chatMessageRepository.save(transferMessage);
 
-        log.info("송금 메세지 알림");
         // 알림 설정 및 메세지 생성
         FcmMessageRequest fcmRequest = new FcmMessageRequest();
         fcmRequest.setUserId(toUser.getId());
         fcmRequest.setTitle("송금 봉투가 도착했습니다.");
         fcmRequest.setBody("[" + fromUser.getProfile().getNickname() + "] 님이 " + amount + "원을 송금하셨습니다.");
         fcmRequest.setImage(fromUser.getProfile().getProfileImg());
-        log.info(fcmRequest.getUserId() + ": " + fcmRequest.getBody());
+
         fcmService.sendMessage(fcmRequest);
 
         return ChatMessageTransferResponse.builder()

@@ -14,5 +14,4 @@ public class ChatRoomDetailResponse {
     String title;
     Long wage;
     String address;
-    boolean isReceived;
 }
