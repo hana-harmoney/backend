@@ -266,5 +266,8 @@ public class ProfileServiceImpl implements ProfileService {
         return toResponse(p);
     }
 
-
+    @Override
+    public boolean existsByUserId(Long userId) {
+        return profileRepository.existsByUserId(userId);
+    }
 }

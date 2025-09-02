@@ -11,6 +11,10 @@ public enum ErrorStatus implements BaseStatus {
     SERVER_ERROR("E002", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHORIZED("E003", "권한이 없습니다.", HttpStatus.UNAUTHORIZED),
 
+    // 토큰 관련
+    INVALID_TOKEN("T001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
+    TOKEN_EXPIRED("T002", "만료된 토큰입니다.", HttpStatus.UNAUTHORIZED),
+
     // User 관련 error
     BAD_CREDENTIALS("E004", "아이디 또는 비밀번호가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED),
     DUPLICATE_LOGIN_ID("E005", "이미 사용 중인 아이디입니다.", HttpStatus.CONFLICT),

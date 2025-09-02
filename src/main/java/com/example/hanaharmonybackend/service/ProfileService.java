@@ -22,4 +22,6 @@ public interface ProfileService {
     ProfileResponse patch(Long userId, ProfilePatchRequest req);
     ProfileResponse getMyProfile(Long currentUserId);
     ProfileResponse getByUserId(Long userId);
+    boolean existsByUserId(Long userId);
+
 }
