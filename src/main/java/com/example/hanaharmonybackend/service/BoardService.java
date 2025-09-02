@@ -20,6 +20,6 @@ public interface BoardService {
 
     BoardResponse updateBoard(Long boardId, Long userId, BoardUpdateRequest request);
 
-    Page<BoardNearbyDto> getNearbyBoards(double radiusKm, int page, int size);
+    List<BoardNearbyDto> getNearbyBoards(double radiusKm);
 
 }

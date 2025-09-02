@@ -228,29 +228,29 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
-    // 사용자 위치 기준 반경 내 게시글 조회 (distanceKm 포함)
+    // 사용자 위치 기준 반경 내 게시글 조회 (distance 포함)
     @Transactional(readOnly = true)
-    public Page<BoardNearbyDto> getNearbyBoards(double radiusKm, int page, int size) {
+    public List<BoardNearbyDto> getNearbyBoards(double radius) {
         User me = SecurityUtil.getCurrentMember();
         if (me.getLatitude() == null || me.getLongitude() == null) {
-            throw new CustomException(ErrorStatus.USER_LOCATION_REQUIRED); // USER_LOCATION_REQUIRED 등에 맞춰 처리
+            throw new CustomException(ErrorStatus.USER_LOCATION_REQUIRED);
         }
 
-        // 1) 반경 내 게시글 id + 거리(km)만 우선 조회 (정렬: 거리 오름차순)
-        Page<Object[]> idPage = boardRepository.findNearbyIdsWithDistance(
-                me.getLatitude(), me.getLongitude(), radiusKm, PageRequest.of(page, size)
+        // 1) 반경 내 전체 id + distance 조회 (정렬: 거리 ASC)
+        List<Object[]> rows = boardRepository.findNearbyIdsWithDistanceAll(
+                me.getLatitude(), me.getLongitude(), radius
         );
 
-        // 2) id → distance 매핑 및 id 순서 보존용 리스트
-        var ids = idPage.map(r -> ((Number) r[0]).longValue()).getContent();
-        Map<Long, Double> distanceMap = new HashMap<>();
-        idPage.getContent().forEach(r -> distanceMap.put(((Number) r[0]).longValue(), ((Number) r[1]).doubleValue()));
+        // 2) id → distance 매핑 및 순서 보존
+        List<Long> ids = rows.stream().map(r -> ((Number) r[0]).longValue()).toList();
+        var distanceMap = new java.util.HashMap<Long, Double>();
+        rows.forEach(r -> distanceMap.put(((Number) r[0]).longValue(), ((Number) r[1]).doubleValue()));
 
-        // 3) 배치로 엔티티 조회 후, idPage 순서대로 DTO 조립
+        // 3) 엔티티 배치 조회 후, rows 순서대로 DTO 조립
         var boardsById = boardRepository.findAllById(ids)
-                .stream().collect(java.util.stream.Collectors.toMap(Board::getBoardId, b -> b));
+                .stream().collect(Collectors.toMap(Board::getBoardId, b -> b));
 
-        var dtoList = new ArrayList<BoardNearbyDto>(ids.size());
+        var result = new java.util.ArrayList<BoardNearbyDto>(ids.size());
         for (Long boardId : ids) {
             Board b = boardsById.get(boardId);
             if (b == null) continue;
@@ -266,34 +266,34 @@ public class BoardServiceImpl implements BoardService {
 
             Profile profile = b.getUser().getProfile();
 
-            BoardNearbyDto dto = BoardNearbyDto.builder()
-                    .boardId(b.getBoardId())
-                    .userId(b.getUser().getId())
-                    .nickname(profile.getNickname())
-                    .phone(b.getUser().getPhone())
-                    .trust(profile.getTrust())
-                    .title(b.getTitle())
-                    .content(b.getContent())
-                    .wage(b.getWage())
-                    .address(b.getAddress())
-                    .latitude(b.getLatitude())
-                    .longitude(b.getLongitude())
-                    .imageUrl(b.getImageUrl())
-                    .category(b.getCategory().getName())
-                    .status(b.getStatus())
-                    .profileUrl(profile.getProfileImg())
-                    .isMine(isMine)
-                    .chatRoomCnt(chatRoomCnt)
-                    .chatRoomId(chatRoomId)
-                    .createdAt(b.getCreatedAt())
-                    .updatedAt(b.getUpdatedAt())
-                    .distance(distanceMap.getOrDefault(boardId, 0.0))
-                    .build();
-
-            dtoList.add(dto);
+            result.add(
+                    BoardNearbyDto.builder()
+                            .boardId(b.getBoardId())
+                            .userId(b.getUser().getId())
+                            .nickname(profile.getNickname())
+                            .phone(b.getUser().getPhone())
+                            .trust(profile.getTrust())
+                            .title(b.getTitle())
+                            .content(b.getContent())
+                            .wage(b.getWage())
+                            .address(b.getAddress())
+                            .latitude(b.getLatitude())
+                            .longitude(b.getLongitude())
+                            .imageUrl(b.getImageUrl())
+                            .category(b.getCategory().getName())
+                            .status(b.getStatus())
+                            .profileUrl(profile.getProfileImg())
+                            .isMine(isMine)
+                            .chatRoomCnt(chatRoomCnt)
+                            .chatRoomId(chatRoomId)
+                            .createdAt(b.getCreatedAt())
+                            .updatedAt(b.getUpdatedAt())
+                            .distance(distanceMap.getOrDefault(boardId, 0.0))
+                            .build()
+            );
         }
 
-        return new PageImpl<>(dtoList, PageRequest.of(page, size), idPage.getTotalElements());
+        return result;
     }
 
 }
