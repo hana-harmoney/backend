@@ -1,6 +1,8 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
 import com.example.hanaharmonybackend.domain.ProxyAccess;
+import com.example.hanaharmonybackend.payload.code.ErrorStatus;
+import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.ProxyAccessRepository;
 import com.example.hanaharmonybackend.service.ProxyAccessService;
@@ -33,10 +35,15 @@ public class ProxyAccessServiceImpl implements ProxyAccessService {
     @Override
     public ProxyAccess validateUsable(String token) {
         ProxyAccess pa = repository.findByDelegateToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("INVALID_TOKEN"));
-        if (!"PROFILE_CREATE".equals(pa.getScope())) throw new IllegalArgumentException("INVALID_SCOPE");
-        if (pa.isUsed()) throw new IllegalArgumentException("TOKEN_ALREADY_USED");
-        if (pa.getExpiresAt().isBefore(Instant.now())) throw new IllegalArgumentException("TOKEN_EXPIRED");
+                .orElseThrow(() -> new CustomException(ErrorStatus.INVALID_TOKEN));
+
+        if (!"PROFILE_CREATE".equals(pa.getScope()))
+            throw new CustomException(ErrorStatus.INVALID_SCOPE);
+        if (pa.isUsed())
+            throw new CustomException(ErrorStatus.TOKEN_ALREADY_USED);
+        if (pa.getExpiresAt().isBefore(Instant.now()))
+            throw new CustomException(ErrorStatus.TOKEN_EXPIRED);
+
         return pa;
     }
 

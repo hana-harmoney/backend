@@ -7,20 +7,24 @@ import com.example.hanaharmonybackend.service.ProfileService;
 import com.example.hanaharmonybackend.service.ProxyAccessService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
 import com.example.hanaharmonybackend.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Tag(name = "Delegate", description = "자녀 위임 프로필 등록 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/delegate")
+@RequestMapping("/delegate")
 public class DelegateController {
     private final ProxyAccessService proxyAccessService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
 
     // A) 생성 전용 링크 발급 (로그인 필요)
+    @Operation(summary = "생성 전용 링크 발급 (로그인 필요)")
     @PostMapping("/links/create")
     public ApiResponse<?> createLinkForCreate() {
         User me = SecurityUtil.getCurrentMember();
@@ -31,18 +35,17 @@ public class DelegateController {
         }
 
         ProxyAccess pa = proxyAccessService.createForProfileCreate(ownerUserId);
-        String link = "https://your-frontend.com/delegate?token=" + pa.getDelegateToken();
-        String code = pa.getDelegateToken().substring(0, 6).toUpperCase();
+        String link = "https://hanaharmoney.com/delegate?token=" + pa.getDelegateToken();
 
         return ApiResponse.success(Map.of(
                 "delegateToken", pa.getDelegateToken(),
                 "shareLink", link,
-                "code", code,
                 "expiresAt", pa.getExpiresAt().toString()
         ));
     }
 
     // B) 자녀가 제한 JWT로 교환 (비로그인)
+    @Operation(summary = "자녀가 제한 JWT로 교환 (비로그인)")
     @PostMapping("/session/create")
     public ApiResponse<?> exchangeForCreate(@RequestParam String token) {
         ProxyAccess pa = proxyAccessService.validateUsable(token);

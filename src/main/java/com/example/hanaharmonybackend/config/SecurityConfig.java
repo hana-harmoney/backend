@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/signup", "/auth/login", "/auth/check-id",
+                        .requestMatchers("/", "/auth/signup", "/auth/login", "/auth/check-id", "/delegate/session/create",
                                 "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/ws-stomp/**").permitAll()
                         .anyRequest().authenticated()
                 )
