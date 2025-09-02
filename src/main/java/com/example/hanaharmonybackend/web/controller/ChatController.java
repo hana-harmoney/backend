@@ -3,9 +3,11 @@ package com.example.hanaharmonybackend.web.controller;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.service.FcmService;
 import com.example.hanaharmonybackend.service.TransferService;
 import com.example.hanaharmonybackend.web.dto.chatMessage.*;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
+import com.example.hanaharmonybackend.web.dto.fcm.FcmMessageRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name = "Chat", description = "채팅 API")
 @RestController

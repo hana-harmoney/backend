@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FcmServiceImpl implements FcmService {
-//    https://fcm.googleapis.com/v1/projects/hanaharmoney-c35b3/messages:send
 
     private final AuthService authService;
     private final UserRepository userRepository;
@@ -37,6 +36,7 @@ public class FcmServiceImpl implements FcmService {
                 .setNotification(Notification.builder()
                         .setTitle(request.getTitle())
                         .setBody(request.getBody())
+                        .setImage(request.getImage())
                         .build())
                 .build();
 

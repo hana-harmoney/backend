@@ -6,9 +6,12 @@ import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
+import com.example.hanaharmonybackend.service.FcmService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatMessage.*;
+import com.example.hanaharmonybackend.web.dto.fcm.FcmMessageRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final AccountRepository accountRepository;
     private final TransactionHistoryRepository txRepository;
     private final ChatRoomService chatRoomService;
+    private final FcmService fcmService;
 
     // 메세지 보내기
     @Override
@@ -49,6 +53,15 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         );
 
         ChatMessage saved = chatMessageRepository.save(chatMessage);
+
+        FcmMessageRequest fcmRequest = new FcmMessageRequest();
+        fcmRequest.setUserId(receiver.getId());
+        fcmRequest.setTitle("새로운 메세지가 왔어요.");
+        fcmRequest.setBody(saved.getMessage());
+        fcmRequest.setImage(sender.getProfile().getProfileImg());
+
+        fcmService.sendMessage(fcmRequest);
+
         return ChatMessageResponse.from(saved);
     }
 
