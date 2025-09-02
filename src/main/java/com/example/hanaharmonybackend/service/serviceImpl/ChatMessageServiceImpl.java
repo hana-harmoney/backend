@@ -15,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -137,9 +139,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         fromUser.getProfile().increaseMatchCount();
         toUser.getProfile().increaseMatchCount();
 
+        String formattedAmount = formatAmount(amount);
+
         // 송금 완료 메시지 생성
         ChatMessage transferMessage = new ChatMessage(
-                "[" + fromUser.getProfile().getNickname() + "] 님이 " + amount + "원을 송금하셨습니다.",
+                "[" + fromUser.getProfile().getNickname() + "] 님이 " + formattedAmount + "원을 송금하셨습니다.",
                 amount,
                 room,
                 fromUser,
@@ -152,7 +156,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         FcmMessageRequest fcmRequest = new FcmMessageRequest();
         fcmRequest.setUserId(toUser.getId());
         fcmRequest.setTitle("송금 봉투가 도착했습니다.");
-        fcmRequest.setBody("[" + fromUser.getProfile().getNickname() + "] 님이 " + amount + "원을 송금하셨습니다.");
+        fcmRequest.setBody("[" + fromUser.getProfile().getNickname() + "] 님이 " + formattedAmount + "원을 송금하셨습니다.");
         fcmRequest.setImage(fromUser.getProfile().getProfileImg());
 
         fcmService.sendMessage(fcmRequest);
@@ -165,5 +169,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .amount(amount) // 보낸 금액
                 .chatMessage(ChatMessageResponse.from(savedMessage)) // 채팅 메세지
                 .build();
+    }
+
+    private String formatAmount(Long amount) {
+        NumberFormat formatter = NumberFormat.getInstance(Locale.KOREA);
+        return formatter.format(amount);
     }
 }
