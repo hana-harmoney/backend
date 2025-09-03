@@ -1,14 +1,12 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
-import com.example.hanaharmonybackend.domain.Account;
-import com.example.hanaharmonybackend.domain.Expense;
-import com.example.hanaharmonybackend.domain.Income;
-import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.domain.*;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.AccountCommandService;
 import com.example.hanaharmonybackend.service.AuthService;
+import com.example.hanaharmonybackend.service.ReportService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.*;
@@ -26,12 +24,13 @@ import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AccountCommandService accountCommandService;
     private final ProfileRepository profileRepository;
     private final IncomeRepository incomeRepository;
     private final ExpenseRepository expenseRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AccountCommandService accountCommandService;
+    private final ReportService reportService;
 
     @Override
     public LoginResponse login(LoginRequest req) {
@@ -129,6 +128,8 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         expenseRepository.save(expense);
 
+        // 1월 ~ 현재월 직전까지의 통계 데이터 초기화
+        reportService.initializeReportsForNewUser(user);
 
         return new SignupResponse(saved.getId(), saved.getLoginId(), saved.getName());
     }

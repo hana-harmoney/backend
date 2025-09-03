@@ -98,11 +98,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public ChatRoomDetailResponse getChatRoomDetail(Long roomId) {
         User loginUser = SecurityUtil.getCurrentMember();
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-        if (!isMember(roomId, loginUser.getLoginId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
+        ChatRoom room = getValidRoom(roomId, loginUser.getId());
 
         User otherUser = room.getUser1().getId().equals(loginUser.getId())
                 ? room.getUser2()
@@ -129,11 +125,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Transactional
     public ChatRoomReportResponse reportChatRoom(Long roomId) {
         User loginUser = SecurityUtil.getCurrentMember();
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-        if (!isMember(roomId, loginUser.getLoginId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
+        ChatRoom room = getValidRoom(roomId, loginUser.getId());
 
         User reportedUser = room.getUser1().getId().equals(loginUser.getId())
                 ? room.getUser2()
@@ -155,11 +147,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Transactional
     public ChatRoomReviewResponse reviewChatRoom(Long roomId, ChatRoomReviewRequest request) {
         User loginUser = SecurityUtil.getCurrentMember();
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-        if (!isMember(roomId, loginUser.getLoginId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
+        ChatRoom room = getValidRoom(roomId, loginUser.getId());
 
         Double score = request.getScore();
         if (score == null || !(score == -0.5 || score == 0.5 || score == 1.0)) {
@@ -181,11 +169,21 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .build();
     }
 
-    public boolean isMember(Long roomId, String loginId) {
+    // 채팅방 권한 확인 메소드
+    @Override
+    public ChatRoom getValidRoom(Long roomId, Long userId) {
         ChatRoom room = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
 
-        return room.getUser1().getLoginId().equals(loginId) ||
-                room.getUser2().getLoginId().equals(loginId);
+        if (!isMember(room, userId)) {
+            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
+        }
+
+        return room;
+    }
+
+    public boolean isMember(ChatRoom room, Long userId) {
+        return room.getUser1().getId().equals(userId) ||
+                room.getUser2().getId().equals(userId);
     }
 }
