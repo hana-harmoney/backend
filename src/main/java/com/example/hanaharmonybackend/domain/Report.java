@@ -26,18 +26,18 @@ public class Report extends BaseEntity {
     @Column(name = "receipt_count")
     private Integer receiptCount;
 
-    @Column(name = "total_amount")
-    private Long totalAmount;
+    @Column(name = "monthly_amount")
+    private Long monthlyAmount;
 
-    public Report(User user, LocalDate month, Integer receiptCount, Long totalAmount) {
+    public Report(User user, LocalDate month, Integer receiptCount, Long monthlyAmount) {
         this.user = user;
         this.month = month;
         this.receiptCount = receiptCount;
-        this.totalAmount = totalAmount;
+        this.monthlyAmount = monthlyAmount;
     }
 
     public void addReceipt(Long amount) {
         this.receiptCount = (this.receiptCount == 0 ? 1 : this.receiptCount + 1);
-        this.totalAmount = (this.totalAmount == 0 ? amount : this.totalAmount + amount);
+        this.monthlyAmount = (this.monthlyAmount == 0 ? amount : this.monthlyAmount + amount);
     }
 }
