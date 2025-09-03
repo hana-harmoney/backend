@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public interface ReportService {
     void saveTransferReport(User receiver, Long amount, LocalDateTime regdate);
 
+    void initializeReportsForNewUser(User user);
+    
     ReportDetailResponse getTodayMonthReport();
 
     ReportListResponse getMonthlyReport();

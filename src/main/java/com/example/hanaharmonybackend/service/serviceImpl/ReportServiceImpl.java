@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,5 +74,28 @@ public class ReportServiceImpl implements ReportService {
         return ReportListResponse.builder()
                 .reportList(reportList)
                 .build();
+    }
+
+    // 과거 하모니 통계 이력 자동 생성
+    @Transactional
+    public void initializeReportsForNewUser(User user) {
+        LocalDate now = LocalDate.now();
+        int currentMonth = now.getMonthValue();
+
+        for (int month = 1; month < currentMonth; month++) {
+            LocalDate monthStart = LocalDate.of(now.getYear(), month, 1);
+
+            int receiptCount = ThreadLocalRandom.current().nextInt(0, 31); // 0 ~ 100
+            long totalAmount = ThreadLocalRandom.current().nextLong(50_000, 1_000_001);
+            totalAmount = (totalAmount / 1000) * 1000;
+
+            Report report = new Report(
+                    user,
+                    monthStart,
+                    receiptCount,
+                    totalAmount
+            );
+            reportRepository.save(report);
+        }
     }
 }
