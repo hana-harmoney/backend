@@ -1,12 +1,12 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
 import com.example.hanaharmonybackend.domain.Account;
+import com.example.hanaharmonybackend.domain.Expense;
+import com.example.hanaharmonybackend.domain.Income;
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
-import com.example.hanaharmonybackend.repository.AccountRepository;
-import com.example.hanaharmonybackend.repository.ProfileRepository;
-import com.example.hanaharmonybackend.repository.UserRepository;
+import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.AccountCommandService;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
@@ -30,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AccountCommandService accountCommandService;
     private final ProfileRepository profileRepository;
+    private final IncomeRepository incomeRepository;
+    private final ExpenseRepository expenseRepository;
 
     @Override
     public LoginResponse login(LoginRequest req) {
@@ -102,11 +104,31 @@ public class AuthServiceImpl implements AuthService {
 
         // 2) 계좌 생성
         Account account = accountCommandService.createFor(user);
-
         // 초기 입금: 4000만원
         account.deposit(40_000_000L);
-
         user.setAccount(account);
+
+        //3 ) 수입, 지출 데이터 생성
+        Income income = Income.builder()
+                .account(account)
+                .month(8)
+                .pension(720_000L)
+                .rentIncome(1_500_000L)
+                .harmoneyIncome(300_000L)
+                .otherIncome(50_000L)
+                .build();
+        incomeRepository.save(income);
+
+        Expense expense = Expense.builder()
+                .account(account)
+                .month(8)
+                .livingExpense(500_000L)
+                .medicalExpense(200_000L)
+                .leisureExpense(120_000L)
+                .otherExpense(40_000L)
+                .build();
+        expenseRepository.save(expense);
+
 
         return new SignupResponse(saved.getId(), saved.getLoginId(), saved.getName());
     }
