@@ -47,7 +47,11 @@ public enum ErrorStatus implements BaseStatus {
     CHATROOM_ACCESS_DENIED("C002", "채팅방에 접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
     INVALID_REVIEW_SCORE("C003", "유효하지 않은 리뷰 점수입니다. 허용값: -0.5, 0.5, 1.0", HttpStatus.BAD_REQUEST),
     CHATROOM_TRANSFER_DENIED("C004", "게시글 작성자만 송금할 수 있습니다", HttpStatus.FORBIDDEN),
-    INVALID_TRANSFER_AMOUNT("C005", "송금 금액은 0원 이상이어야 합니다.", HttpStatus.BAD_REQUEST);
+    INVALID_TRANSFER_AMOUNT("C005", "송금 금액은 0원 이상이어야 합니다.", HttpStatus.BAD_REQUEST),
+
+    //수입, 지출 관련 error
+    FINANCE_RECORD_NOT_FOUND("F001", "해당 월의 수입/지출 데이터를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+
 
     private final String code;
     private final String message;
