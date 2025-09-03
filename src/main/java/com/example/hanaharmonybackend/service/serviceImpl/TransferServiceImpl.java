@@ -82,7 +82,8 @@ public class TransferServiceImpl implements TransferService {
         return new PocketTransferResponse(
                 from.getAccountBalance(),
                 to.getCurrentAmount(),
-                request.getAmount()
+                request.getAmount(),
+                to.getTargetAmount()
         );
     }
 
@@ -112,7 +113,8 @@ public class TransferServiceImpl implements TransferService {
         return new PocketTransferResponse(
                 to.getAccountBalance(),
                 from.getCurrentAmount(),
-                request.getAmount()
+                request.getAmount(),
+                from.getTargetAmount()
         );
     }
 }

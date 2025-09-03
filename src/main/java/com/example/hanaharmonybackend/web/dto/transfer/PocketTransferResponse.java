@@ -10,4 +10,5 @@ public class PocketTransferResponse {
     private Long change;       // 계좌 잔액
     private Long pocketAmount; // 주머니 잔액
     private Long amount;       // 이체 금액
+    private Long targetAmount; // 주머니 목표 금액
 }
