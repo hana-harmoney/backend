@@ -11,7 +11,6 @@ import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatMessage.*;
 import com.example.hanaharmonybackend.web.dto.fcm.FcmMessageRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,9 +37,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public ChatMessageResponse saveMessage(ChatMessageRequest request, String loginId) {
         User sender = userRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CustomException(ErrorStatus.USER_NOT_FOUND));
-
-        ChatRoom room = chatRoomRepository.findById(request.getRoomId())
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+        ChatRoom room = chatRoomService.getValidRoom(request.getRoomId(), sender.getId());
 
         User receiver = room.getUser1().getId().equals(sender.getId())
                 ? room.getUser2()
@@ -72,11 +68,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public ChatMessageListResponse getMessagesByRoomId(Long roomId) {
         User loginUser = SecurityUtil.getCurrentMember();
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
-        if (!chatRoomService.isMember(roomId, loginUser.getLoginId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
+        ChatRoom room = chatRoomService.getValidRoom(roomId, loginUser.getId());
 
         List<ChatMessage> messages = chatMessageRepository.findAllByRoomIdOrderByCreatedAtAsc(roomId);
 
@@ -94,15 +86,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public ChatMessageTransferResponse chatTransferAccountToAccount(Long roomId, ChatMessageTransferRequest request) {
         User loginUser = SecurityUtil.getCurrentMember();
-
-        ChatRoom room = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new CustomException(ErrorStatus.CHATROOM_NOT_FOUND));
+        ChatRoom room = chatRoomService.getValidRoom(roomId, loginUser.getId());
 
         Long amount = request.getAmount();
-
-        if (!chatRoomService.isMember(roomId, loginUser.getLoginId())) {
-            throw new CustomException(ErrorStatus.CHATROOM_ACCESS_DENIED);
-        }
 
         if (amount == null || amount <= 0) {
             throw new CustomException(ErrorStatus.INVALID_TRANSFER_AMOUNT);

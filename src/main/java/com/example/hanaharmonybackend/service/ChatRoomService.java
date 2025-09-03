@@ -1,5 +1,6 @@
 package com.example.hanaharmonybackend.service;
 
+import com.example.hanaharmonybackend.domain.ChatRoom;
 import com.example.hanaharmonybackend.web.dto.chatRoom.*;
 
 public interface ChatRoomService {
@@ -9,9 +10,9 @@ public interface ChatRoomService {
 
     ChatRoomDetailResponse getChatRoomDetail(Long roomId);
 
-    boolean isMember(Long roomId, String loginId);
-
     ChatRoomReportResponse reportChatRoom(Long roomId);
 
     ChatRoomReviewResponse reviewChatRoom(Long roomId, ChatRoomReviewRequest reviewRequest);
+
+    ChatRoom getValidRoom(Long roomId, Long userId);
 }
