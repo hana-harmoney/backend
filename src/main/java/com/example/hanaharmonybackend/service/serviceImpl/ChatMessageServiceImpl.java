@@ -7,6 +7,7 @@ import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.ChatMessageService;
 import com.example.hanaharmonybackend.service.ChatRoomService;
 import com.example.hanaharmonybackend.service.FcmService;
+import com.example.hanaharmonybackend.service.ReportService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.chatMessage.*;
 import com.example.hanaharmonybackend.web.dto.fcm.FcmMessageRequest;
@@ -24,11 +25,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final TransactionHistoryRepository txRepository;
     private final ChatRoomService chatRoomService;
+    private final ReportService reportService;
     private final FcmService fcmService;
 
     // 메세지 보내기
@@ -126,7 +127,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         toUser.getProfile().increaseMatchCount();
 
         String formattedAmount = formatAmount(amount);
-
         // 송금 완료 메시지 생성
         ChatMessage transferMessage = new ChatMessage(
                 "[" + fromUser.getProfile().getNickname() + "] 님이 " + formattedAmount + "원을 송금하셨습니다.",
@@ -137,6 +137,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         );
 
         ChatMessage savedMessage = chatMessageRepository.save(transferMessage);
+
+        // 자산 리포트 통계
+        reportService.saveTransferReport(toUser, amount, transferMessage.getCreatedAt());
 
         // 알림 설정 및 메세지 생성
         FcmMessageRequest fcmRequest = new FcmMessageRequest();
