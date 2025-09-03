@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.board;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

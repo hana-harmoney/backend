@@ -1,7 +1,7 @@
 package com.example.hanaharmonybackend.service;
 
 import com.example.hanaharmonybackend.web.dto.account.AccountDetailResponse;
-import com.example.hanaharmonybackend.web.dto.AccountNameResponse;
+import com.example.hanaharmonybackend.web.dto.account.AccountNameResponse;
 import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 
 public interface AccountService {

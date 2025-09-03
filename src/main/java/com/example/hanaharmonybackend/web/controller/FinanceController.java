@@ -2,8 +2,8 @@ package com.example.hanaharmonybackend.web.controller;
 
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.FinanceService;
-import com.example.hanaharmonybackend.web.dto.ExpenseResponse;
-import com.example.hanaharmonybackend.web.dto.IncomeResponse;
+import com.example.hanaharmonybackend.web.dto.finance.ExpenseResponse;
+import com.example.hanaharmonybackend.web.dto.finance.IncomeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

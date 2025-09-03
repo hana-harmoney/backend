@@ -4,14 +4,13 @@ import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.domain.DescImage;
 import com.example.hanaharmonybackend.domain.Profile;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
-import com.example.hanaharmonybackend.repository.DescImageRepository;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.service.ProfileService;
-import com.example.hanaharmonybackend.web.dto.ProfileCreateRequest;
-import com.example.hanaharmonybackend.web.dto.ProfilePatchRequest;
-import com.example.hanaharmonybackend.web.dto.ProfileResponse;
+import com.example.hanaharmonybackend.web.dto.profile.ProfileCreateRequest;
+import com.example.hanaharmonybackend.web.dto.profile.ProfilePatchRequest;
+import com.example.hanaharmonybackend.web.dto.profile.ProfileResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.example.hanaharmonybackend.payload.code.ErrorStatus.*;
 

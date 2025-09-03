@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.finance;
 
 import lombok.Builder;
 import lombok.Getter;

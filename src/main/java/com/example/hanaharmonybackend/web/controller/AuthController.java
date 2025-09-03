@@ -4,10 +4,9 @@ import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.payload.code.SuccessStatus;
 import com.example.hanaharmonybackend.service.AuthService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.*;
+import com.example.hanaharmonybackend.web.dto.auth.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
