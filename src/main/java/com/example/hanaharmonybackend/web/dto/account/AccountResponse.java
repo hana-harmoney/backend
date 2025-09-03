@@ -22,5 +22,6 @@ public class AccountResponse {
         private Long pocketId;
         private String name;
         private Long amount;
+        private Long targetAmount;
     }
 }
