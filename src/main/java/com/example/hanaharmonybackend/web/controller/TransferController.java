@@ -3,15 +3,13 @@ package com.example.hanaharmonybackend.web.controller;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.AccountService;
 import com.example.hanaharmonybackend.service.TransferService;
-import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.AccountNameRequest;
-import com.example.hanaharmonybackend.web.dto.AccountNameResponse;
+import com.example.hanaharmonybackend.web.dto.account.AccountNameRequest;
+import com.example.hanaharmonybackend.web.dto.account.AccountNameResponse;
 import com.example.hanaharmonybackend.web.dto.transfer.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Transfer", description = "송금 API")

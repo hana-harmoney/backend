@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.profile;
 
 import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;

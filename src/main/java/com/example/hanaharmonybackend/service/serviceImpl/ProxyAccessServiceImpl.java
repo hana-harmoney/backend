@@ -25,7 +25,7 @@ public class ProxyAccessServiceImpl implements ProxyAccessService {
                 .ownerUserId(ownerUserId)
                 .profileId(null) // 생성 전이므로 없음
                 .delegateToken(token)
-                .expiresAt(Instant.now().plus(24, ChronoUnit.HOURS))
+                .expiresAt(Instant.now().plus(24, ChronoUnit.HOURS)) // 링크 유효 시간
                 .scope("PROFILE_CREATE")
                 .used(false)
                 .build();

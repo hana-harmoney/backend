@@ -56,7 +56,7 @@ public class DelegateController {
                         "scope", "PROFILE_CREATE",
                         "userIdScope", pa.getOwnerUserId()
                 ),
-                60 * 60 * 2  // 2시간 유효
+                60 * 60 * 2  // 2시간 유효 - JWT의 만료시간
         );
 
         // 발급 즉시 단일 사용 처리

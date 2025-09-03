@@ -1,13 +1,14 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.board;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
 @Getter
 @Builder
-public class BoardResponse {
+public class BoardNearbyDto {
     private Long boardId;
     private Long userId;
     private String nickname;
@@ -28,4 +29,6 @@ public class BoardResponse {
     private Long chatRoomId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private double distance;
 }

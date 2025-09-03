@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.profile;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

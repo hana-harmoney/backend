@@ -1,11 +1,10 @@
 package com.example.hanaharmonybackend.service;
 
-import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
-import com.example.hanaharmonybackend.web.dto.BoardNearbyDto;
-import com.example.hanaharmonybackend.web.dto.BoardResponse;
-import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardCreateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardNearbyDto;
+import com.example.hanaharmonybackend.web.dto.board.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.board.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 

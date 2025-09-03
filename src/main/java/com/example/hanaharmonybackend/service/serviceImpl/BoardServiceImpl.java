@@ -8,24 +8,18 @@ import com.example.hanaharmonybackend.repository.*;
 import com.example.hanaharmonybackend.service.BoardService;
 import com.example.hanaharmonybackend.service.FileStorageService;
 import com.example.hanaharmonybackend.util.SecurityUtil;
-import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
-import com.example.hanaharmonybackend.web.dto.BoardNearbyDto;
-import com.example.hanaharmonybackend.web.dto.BoardResponse;
-import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardCreateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardNearbyDto;
+import com.example.hanaharmonybackend.web.dto.board.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.board.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomInfoResponse;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 

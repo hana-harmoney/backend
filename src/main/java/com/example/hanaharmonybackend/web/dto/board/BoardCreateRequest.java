@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.board;
 
 import lombok.Getter;
 import lombok.Setter;

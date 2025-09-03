@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.auth;
 
 import com.example.hanaharmonybackend.domain.enumerate.GENDER;
 import jakarta.validation.constraints.*;

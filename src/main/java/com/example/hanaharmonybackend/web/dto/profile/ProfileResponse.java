@@ -1,4 +1,4 @@
-package com.example.hanaharmonybackend.web.dto;
+package com.example.hanaharmonybackend.web.dto.profile;
 
 import java.util.List;
 

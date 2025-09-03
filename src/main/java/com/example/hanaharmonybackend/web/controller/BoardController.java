@@ -1,12 +1,12 @@
 package com.example.hanaharmonybackend.web.controller;
-import com.example.hanaharmonybackend.web.dto.BoardUpdateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardUpdateRequest;
 import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.BoardService;
-import com.example.hanaharmonybackend.web.dto.BoardCreateRequest;
-import com.example.hanaharmonybackend.web.dto.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.board.BoardCreateRequest;
+import com.example.hanaharmonybackend.web.dto.board.BoardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
