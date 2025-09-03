@@ -47,6 +47,7 @@ public class AccountServiceImpl implements AccountService {
                     .pocketId(p.getPocketId())
                 .name(p.getPocketName())
                 .amount(p.getCurrentAmount())
+                .targetAmount(p.getTargetAmount())
                 .build())
             .toList()
         )
