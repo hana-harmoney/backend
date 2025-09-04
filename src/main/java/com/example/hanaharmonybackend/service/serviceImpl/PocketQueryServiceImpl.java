@@ -33,8 +33,12 @@ public class PocketQueryServiceImpl implements PocketQueryService {
 	  throw new CustomException(ErrorStatus.POCKET_ACCESS_DENIED);
 	}
 
-	List<TransactionHistory> rows =
-		txRepository.findByPocketId(pocketId);
+//	JPQL로 작성된 메소드
+//	List<TransactionHistory> rows =
+//		txRepository.findByPocketId(pocketId);
+
+//	QueryDsl로 작성된 메소드
+	List<TransactionHistory> rows = txRepository.findByPocketIdDsl(pocketId);
 
 	List<PocketTxDto> transactions = rows.stream().map(tx -> {
 	  TransactionType dir =
