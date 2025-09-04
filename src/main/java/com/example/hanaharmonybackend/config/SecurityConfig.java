@@ -2,7 +2,6 @@ package com.example.hanaharmonybackend.config;
 
 import com.example.hanaharmonybackend.repository.UserRepository;
 import com.example.hanaharmonybackend.util.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;

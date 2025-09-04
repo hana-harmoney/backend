@@ -3,7 +3,6 @@ package com.example.hanaharmonybackend.service.serviceImpl;
 import com.example.hanaharmonybackend.domain.ProxyAccess;
 import com.example.hanaharmonybackend.payload.code.ErrorStatus;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
-import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.ProxyAccessRepository;
 import com.example.hanaharmonybackend.service.ProxyAccessService;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
 package com.example.hanaharmonybackend.service.serviceImpl;
 
-import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.domain.DescImage;
 import com.example.hanaharmonybackend.domain.Profile;
+import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.exception.CustomException;
 import com.example.hanaharmonybackend.repository.ProfileRepository;
 import com.example.hanaharmonybackend.repository.UserRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.util.List;
 
