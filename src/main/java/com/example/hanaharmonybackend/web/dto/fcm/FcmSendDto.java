@@ -1,6 +1,8 @@
 package com.example.hanaharmonybackend.web.dto.fcm;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 // 전달 받은 객체
 @Getter

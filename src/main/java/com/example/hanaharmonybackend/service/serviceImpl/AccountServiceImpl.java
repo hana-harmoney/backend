@@ -63,7 +63,10 @@ public class AccountServiceImpl implements AccountService {
       throw new CustomException(ErrorStatus.ACCOUNT_ACCESS_DENIED);
     }
 
-    List<TransactionHistory> rows = txRepository.findAccountHistory(accountId);
+//    JPQL로 작성된 메소드
+//    List<TransactionHistory> rows = txRepository.findAccountHistory(accountId);
+//    QueryDsl로 작성된 메소드
+    List<TransactionHistory> rows = txRepository.findAccountHistoryDsl(accountId);
 
     List<AccountTxDto> history = rows.stream().map(tx -> {
 

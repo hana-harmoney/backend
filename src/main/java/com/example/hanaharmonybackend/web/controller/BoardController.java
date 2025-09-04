@@ -1,17 +1,17 @@
 package com.example.hanaharmonybackend.web.controller;
-import com.example.hanaharmonybackend.web.dto.board.BoardUpdateRequest;
-import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 
 import com.example.hanaharmonybackend.domain.User;
 import com.example.hanaharmonybackend.payload.ApiResponse;
 import com.example.hanaharmonybackend.service.BoardService;
+import com.example.hanaharmonybackend.util.SecurityUtil;
 import com.example.hanaharmonybackend.web.dto.board.BoardCreateRequest;
 import com.example.hanaharmonybackend.web.dto.board.BoardResponse;
+import com.example.hanaharmonybackend.web.dto.board.BoardUpdateRequest;
+import com.example.hanaharmonybackend.web.dto.chatRoom.ChatRoomListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.hanaharmonybackend.util.SecurityUtil;
 
 import java.util.List;
 import java.util.Map;

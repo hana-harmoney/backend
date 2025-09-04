@@ -45,13 +45,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // typ 클레임으로 구분 (access / refresh / delegate)
                 String typ = jwt.parseTokenType(token);
 
-                // 🔹 refresh 토큰은 무시
+                // refresh 토큰은 무시
                 if ("refresh".equalsIgnoreCase(typ)) {
                     chain.doFilter(request, response);
                     return;
                 }
 
-                // 🔹 delegate 토큰 처리
+                // delegate 토큰 처리
                 if ("delegate".equalsIgnoreCase(typ)) {
                     Map<String, Object> claims = jwt.parseAllClaims(token);
                     String scope = (String) claims.get("scope");
@@ -72,7 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                // 🔹 일반 access 토큰 처리
+                // 일반 access 토큰 처리
                 Long uid = jwt.parseUserId(token);
 
                 User user = userRepository.findById(uid)

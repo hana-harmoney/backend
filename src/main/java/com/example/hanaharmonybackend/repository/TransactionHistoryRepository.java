@@ -1,13 +1,14 @@
 package com.example.hanaharmonybackend.repository;
 
 import com.example.hanaharmonybackend.domain.TransactionHistory;
+import com.example.hanaharmonybackend.repository.repositoryImpl.TransactionHistoryRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
+public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long>, TransactionHistoryRepositoryCustom {
   @Query("""
         SELECT t FROM TransactionHistory t
         WHERE t.fromPocket.pocketId = :pocketId

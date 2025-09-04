@@ -1,7 +1,10 @@
 package com.example.hanaharmonybackend.web.dto.auth;
 
 import com.example.hanaharmonybackend.domain.enumerate.GENDER;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public record SignupRequest(
         // 아이디: 영문, 숫자로만 구성, 4~20자
