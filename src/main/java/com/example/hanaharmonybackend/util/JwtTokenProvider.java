@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -141,9 +144,10 @@ public class JwtTokenProvider {
 
         // 4) DB에서 사용자 조회
         User user = userRepository.findByLoginId(loginId)
-            .orElseThrow(() -> new UsernameNotFoundException("user '" + loginId + "' not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("user '" + loginId + "' not found"));
 
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
         // 6) Authentication 생성 (credentials에는 토큰 or 빈 문자열)
-        return new UsernamePasswordAuthenticationToken(user, token, null);
+        return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }
 }
