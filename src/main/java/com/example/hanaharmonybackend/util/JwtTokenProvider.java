@@ -1,11 +1,17 @@
 package com.example.hanaharmonybackend.util;
 
+import com.example.hanaharmonybackend.domain.User;
+import com.example.hanaharmonybackend.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -117,5 +123,27 @@ public class JwtTokenProvider {
     public Map<String, Object> parseAllClaims(String token) {
         Claims claims = parseClaims(token);
         return new HashMap<>(claims);
+    }
+
+    private final UserRepository userRepository;
+
+    public Authentication getAuthentication(String token) {
+        // 1) 토큰 유효성
+        if (!validateToken(token)) return null;
+
+        // (선택) access 토큰만 허용
+        String typ = parseTokenType(token);
+        if (typ != null && !"access".equals(typ)) return null;
+
+        // 2) 토큰에서 "login"(또는 subject)을 꺼내서 유저 로드
+        String loginId = parseLoginId(token); // createAccessToken에서 claim("login", loginId) 넣었음
+        if (loginId == null) return null;
+
+        // 4) DB에서 사용자 조회
+        User user = userRepository.findByLoginId(loginId)
+            .orElseThrow(() -> new UsernameNotFoundException("user '" + loginId + "' not found"));
+
+        // 6) Authentication 생성 (credentials에는 토큰 or 빈 문자열)
+        return new UsernamePasswordAuthenticationToken(user, token, null);
     }
 }
