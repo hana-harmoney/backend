@@ -45,7 +45,7 @@ public class StompHandler implements ChannelInterceptor {
 
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             if (authentication == null || !authentication.isAuthenticated()) {
-                System.out.println(authentication + "@@@@@@@@@@@@@@@@@@@@@");
+                log.info(authentication + "@@@@@@@@@@@@@@@@@@@@@");
                 throw new AccessDeniedException("Invalid JWT");
             }
 
