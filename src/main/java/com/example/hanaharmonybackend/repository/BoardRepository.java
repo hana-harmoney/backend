@@ -24,12 +24,16 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     FROM board b
     WHERE b.latitude IS NOT NULL
       AND b.longitude IS NOT NULL
-      and b.status=0
-    HAVING distance_km <= :radiusKm
+      AND b.status = FALSE
+      AND (6371 * ACOS(
+            COS(RADIANS(:lat)) * COS(RADIANS(b.latitude)) *
+            COS(RADIANS(b.longitude) - RADIANS(:lon)) +
+            SIN(RADIANS(:lat)) * SIN(RADIANS(b.latitude))
+          )) <= :radiusKm
     ORDER BY distance_km ASC
     """,
             nativeQuery = true)
-    java.util.List<Object[]> findNearbyIdsWithDistanceAll(@Param("lat") double lat,
-                                                          @Param("lon") double lon,
-                                                          @Param("radiusKm") double radiusKm);
+    List<Object[]> findNearbyIdsWithDistanceAll(@Param("lat") double lat,
+                                                @Param("lon") double lon,
+                                                @Param("radiusKm") double radiusKm);
 }
