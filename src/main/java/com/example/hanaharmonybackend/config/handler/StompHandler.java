@@ -29,7 +29,7 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand cmd = accessor.getCommand();
 
-        log.debug("@@@@@@@@@@@@@start");
+        log.debug("로그 시작!!");
 
         if (cmd != null) {
             log.debug("[STOMP] cmd={}, nativeHeaders={}", cmd, accessor.toNativeHeaderMap());

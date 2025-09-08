@@ -28,6 +28,7 @@ public class AccountController {
   public ApiResponse<AccountResponse> getMyAccount(){
 	User user = SecurityUtil.getCurrentMember();
       log.debug("@@@@@@@@@@@@@내 계좌/주머니 리스트 조회@@@@@@@@@@@@");
+  System.out.println("@@@@@@@@@@@@@@@@@@");
 	return ApiResponse.success(accountService.getMyAccount(user.getId()));
   }
 
