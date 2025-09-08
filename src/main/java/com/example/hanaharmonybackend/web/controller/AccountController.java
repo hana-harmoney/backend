@@ -9,11 +9,13 @@ import com.example.hanaharmonybackend.web.dto.account.AccountResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @Tag(name = "Account", description = "계좌 조회 API")
 @RestController
 @RequestMapping("/home")
@@ -25,6 +27,7 @@ public class AccountController {
   @GetMapping
   public ApiResponse<AccountResponse> getMyAccount(){
 	User user = SecurityUtil.getCurrentMember();
+      log.debug("@@@@@@@@@@@@@내 계좌/주머니 리스트 조회@@@@@@@@@@@@");
 	return ApiResponse.success(accountService.getMyAccount(user.getId()));
   }
 
