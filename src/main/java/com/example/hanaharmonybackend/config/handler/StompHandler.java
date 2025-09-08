@@ -38,6 +38,7 @@ public class StompHandler implements ChannelInterceptor {
             log.debug("[STOMP][CONNECT] Authorization 헤더={}", auth);
 
             String token = (auth != null && auth.startsWith("Bearer ")) ? auth.substring(7) : null;
+            log.info("@@@@@@@@@@@@@@@@ token : {}", token);
             if (token == null || token.isBlank()) {
                 log.warn("[STOMP][CONNECT] 토큰이 없음 -> Principal 세팅 불가");
             }
