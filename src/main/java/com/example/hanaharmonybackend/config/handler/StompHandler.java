@@ -29,6 +29,8 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand cmd = accessor.getCommand();
 
+        log.debug("@@@@@@@@@@@@@start");
+
         if (cmd != null) {
             log.debug("[STOMP] cmd={}, nativeHeaders={}", cmd, accessor.toNativeHeaderMap());
         }
@@ -55,6 +57,9 @@ public class StompHandler implements ChannelInterceptor {
 
             return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
         }
+
+        log.debug("@@@@@@@@@@@@@end");
+
 
         // 인증이 필요한 프레임에서만 Principal 강제
         if ((StompCommand.SEND.equals(cmd) || StompCommand.SUBSCRIBE.equals(cmd) || StompCommand.UNSUBSCRIBE.equals(cmd))
