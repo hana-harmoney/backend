@@ -29,10 +29,9 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand cmd = accessor.getCommand();
 
-        if (cmd != null) {
-            System.out.println("[STOMP] cmd={}, nativeHeaders={}" + cmd + accessor.toNativeHeaderMap());
-            log.debug("[STOMP] cmd={}, nativeHeaders={}", cmd, accessor.toNativeHeaderMap());
-        }
+        // 디버그용: 세션ID 같이 찍어두면 문제 추적 쉬움
+        String sid = accessor.getSessionId();
+        log.debug("[STOMP] cmd={}, sid={}, nativeHeaders={}", cmd, sid, accessor.toNativeHeaderMap());
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String auth = getFirstNativeHeaderIgnoreCase(accessor, "Authorization");
@@ -71,8 +70,7 @@ public class StompHandler implements ChannelInterceptor {
                 attrs.put("wsUser", authentication);
             }
 
-            // (선택) 변경 헤더가 체인에 확실히 반영되도록 leaveMutable
-            accessor.setLeaveMutable(true);
+            log.info("[STOMP][CONNECT] principal set, sid={}", sid);
 
             return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
         }
@@ -82,19 +80,21 @@ public class StompHandler implements ChannelInterceptor {
             && accessor.getUser() == null) {
             log.debug("[STOMP][{}] 프레임 수신, 현재 Principal={}", cmd, accessor.getUser());
 
-            Map<String, Object> attrs = accessor.getSessionAttributes();
-            if (attrs != null) {
-                Object saved = attrs.get("wsUser");
+            if (accessor.getUser() == null) {
+                // 세션에서 복구
+                Map<String, Object> attrs = accessor.getSessionAttributes();
+                Object saved = (attrs != null) ? attrs.get("wsUser") : null;
+
                 if (saved instanceof Authentication authSaved) {
                     accessor.setUser(authSaved);
-                    // 변경 반영
-                    accessor.setLeaveMutable(true);
+                    log.debug("[STOMP][{}] principal restored from session, sid={}", cmd, sid);
+
                     return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
                 }
-            }
-            log.error("[STOMP][{}] Principal 없음 -> No Principal found 예외 발생", cmd);
 
-            throw new AccessDeniedException("No Principal found");
+                log.error("[STOMP][{}] No Principal found (sid={})", cmd, sid);
+                throw new AccessDeniedException("No Principal found");
+            }
         }
 
         return message;
