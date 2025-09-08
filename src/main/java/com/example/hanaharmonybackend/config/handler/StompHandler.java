@@ -28,7 +28,7 @@ public class StompHandler implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         StompCommand cmd = accessor.getCommand();
-
+        System.out.println("넣으실 줄 알았다. ❤️ heart");
         log.info("로그 출력 테스트");
         log.debug("로그 시작!!");
 
