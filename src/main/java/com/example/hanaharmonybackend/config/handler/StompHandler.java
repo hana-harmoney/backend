@@ -55,15 +55,33 @@ public class StompHandler implements ChannelInterceptor {
             log.debug("[STOMP] USER_HEADER in headers -> {}",
                 accessor.getMessageHeaders().get("simpUser"));
 
+            Map<String, Object> attrs = accessor.getSessionAttributes();
+            if (attrs != null) {
+                attrs.put("wsUser", authentication);
+            }
+
+            // (선택) 변경 헤더가 체인에 확실히 반영되도록 leaveMutable
+            accessor.setLeaveMutable(true);
+
             return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
         }
 
         log.debug("@@@@@@@@@@@@@end");
 
-
         // 인증이 필요한 프레임에서만 Principal 강제
         if ((StompCommand.SEND.equals(cmd) || StompCommand.SUBSCRIBE.equals(cmd) || StompCommand.UNSUBSCRIBE.equals(cmd))
             && accessor.getUser() == null) {
+            Map<String, Object> attrs = accessor.getSessionAttributes();
+            if (attrs != null) {
+                Object saved = attrs.get("wsUser");
+                if (saved instanceof Authentication authSaved) {
+                    accessor.setUser(authSaved);
+                    // 변경 반영
+                    accessor.setLeaveMutable(true);
+                    return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
+                }
+            }
+
             throw new AccessDeniedException("No Principal found");
         }
 
