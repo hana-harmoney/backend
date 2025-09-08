@@ -63,10 +63,15 @@ springdoc:
     try-it-out-enabled: true
 
 logging:
+  file:
+    name: /home/ec2-user/app/app.log
   level:
-    org.hibernate.SQL: debug
-    org.springframework : INFO
-    org.springframework.web : DEBUG
+    root: INFO
+    com.example.hanaharmonybackend: DEBUG
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+
 
 aws:
   s3:
