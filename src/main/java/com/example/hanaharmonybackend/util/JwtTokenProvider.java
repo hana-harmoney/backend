@@ -147,7 +147,12 @@ public class JwtTokenProvider {
                 .orElseThrow(() -> new UsernameNotFoundException("user '" + loginId + "' not found"));
 
         var authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        // 6) Authentication 생성 (credentials에는 토큰 or 빈 문자열)
-        return new UsernamePasswordAuthenticationToken(user, token, authorities);
+
+        var auth = UsernamePasswordAuthenticationToken.authenticated(loginId, token, authorities);
+
+        // details에 User 객체를 보관
+        auth.setDetails(user);
+
+        return auth;
     }
 }
